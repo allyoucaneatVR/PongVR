@@ -38,9 +38,13 @@ function init(cardboard, distortion) {
     if(!webVRSuccess){
         switchMode(cardboard, distortion);
     }
+    else{
+        scene.getCamera().getManager().modifiers.push(cameraConfig);
+    }
 
     if(webVRSuccess || mobileVR){
         var lock = null;
+        
         canvas.onclick = function () {
             var camera = scene.getCamera();
             camera.setFullscreen(!camera.isFullscreen(), canvas);
@@ -1248,7 +1252,7 @@ var startObject = {
             if (forwardVector.z < 0) {
                 var scaledFV = forwardVector.scaleBy((Math.abs(scene.getCamera().getManager().getGlobalPosition().z)-Math.abs(start.position.z)) / Math.abs(forwardVector.z));
                 var cameraPositionY = scene.getCamera().getManager().getGlobalPosition().y;
-                console.log(scaledFV.z);
+//                console.log(scaledFV.z);
                 if (scaledFV.x < start.scale.x * (startWidth / 2) &&
                     scaledFV.x > start.scale.x * -(startWidth / 2) &&
                     scaledFV.y < start.scale.y * (startHeight / 2) + cameraPositionY - start.position.y &&
