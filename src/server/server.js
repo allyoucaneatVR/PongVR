@@ -63,6 +63,8 @@ var ballCollision = [frontWall, backWall, topWall, bottomWall, leftWall, rightWa
 
 ////////////////////////////////////////////////////////////////////
 //Init
+var speedOnScoreFactor = 1.1;
+var lastBallMiss = 0;
 function init(){
     console.log("Init...");
 
@@ -99,17 +101,19 @@ function init(){
         io.sockets.emit('collision', sendData);
         
         if(collisionData.collisionWith === frontWall){
-//            removeO3D_Client("ball");
-//            removeO3D(ball);
             ball.position.set(0, aquariumHeight, 0);
+            ball.velocity.z *= speedOnScoreFactor;
             addScore(0);
+            lastBallMiss = Date.now();
         }
         else if(collisionData.collisionWith === backWall){
             ball.position.set(0, aquariumHeight, 0);
+            ball.velocity.z *= speedOnScoreFactor;
             addScore(1);
+            lastBallMiss = Date.now();
         }
         
-        var normal = collisionData.collisionVector.normal;
+        var normal = collisionData.collisionVector.normal.copy();
         normal.scaleBy(-2*normal.dotProduct(ball.velocity));
         ball.velocity = ball.velocity.addVector3(normal);
     };
@@ -253,7 +257,8 @@ function onPlayersConnected(){
 var firstReady = true;
 var readyTime;
 var readyCount = 0;
-var countTo = 5;
+var countIn = 5;
+var maxPoints = 5;
 
 function onPlayersReady(){
     if(firstReady){
@@ -266,9 +271,9 @@ function onPlayersReady(){
     var duration = Date.now() - readyTime;
     
     if(duration/1000.0 > readyCount){
-        console.log(countTo-readyCount);
+        console.log(countIn-readyCount);
         readyCount++;
-        if(readyCount > countTo){
+        if(readyCount > countIn){
             onRoundStart();
             roundActive = true;
             firstReady = true;
@@ -283,10 +288,10 @@ function onRoundStart(){
     console.log("Round start.");
     resetScore();
     ball.position.set(0, aquariumHeight, 0);
-    ball.velocity.set(1.5, 2, 5);
+    ball.velocity.set(1 + 0.5*Math.random(), -2 + 4*Math.random(), 5);
+    lastBallMiss = Date.now();
 }
 function onRoundRun(){
-    var maxPoints = 5;
     if(score1 >= maxPoints || score2 >= maxPoints){
         console.log("Max points.");
         onRoundAbort();
