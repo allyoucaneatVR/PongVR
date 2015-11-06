@@ -106,7 +106,7 @@ var cameraConfig = new VROne.CameraModifier();
 var bodyO3Ds, start, cursor, skybox,
     icoSystem0, icoSystem1, forceField,
     scoreboard0, scoreboard1, torus, platform1,
-    platform2, rdy, audioContext, sound, winlose, balloons, ball;
+    platform2, rdy, waitingForPlayer, sound, winlose, balloons, ball;
 var numbers = [];
 var tslf = 0;
 
@@ -356,6 +356,21 @@ function initScene(){
         rdy.shaderUniforms = [];
         rdy.shaderUniforms.push(["uTime", "uniform1f", timeObject, ["time"]]);
         scene.addToScene(rdy);
+
+        waitingForPlayer = new VROne.OBJLoader(path + "obj/waitingforplayer.obj")[0];
+        waitingForPlayer.imageSrc = path + "obj/textures/waitingforplayer.png";
+        waitingForPlayer.position.y = 10;
+        waitingForPlayer.position.z = 16;
+        waitingForPlayer.transparent = true;
+        waitingForPlayer.logVertexShader = true;
+        waitingForPlayer.logFragmentShader = true;
+        waitingForPlayer.colors = null;
+        waitingForPlayer.shader = path + "shader/rdy";
+        waitingForPlayer.shaderUniforms = [];
+        waitingForPlayer.shaderUniforms.push(["uTime", "uniform1f", timeObject, ["time"]]);
+        waitingForPlayer.scale.x = 3;
+        waitingForPlayer.scale.y = 3;
+        scene.addToScene(waitingForPlayer);
 
         winlose = new VROne.OBJLoader(path + "obj/youwinyoulose.obj")[0];
         winlose.rotation.fromEulerAngles(0,Math.PI,0);
@@ -794,6 +809,8 @@ function negateObjectDirection(){
     start.rotation.fromEulerAngles(0, 0, 0);
     rdy.position.z = -17;
     rdy.rotation.fromEulerAngles(0,0,0);
+    waitingForPlayer.position.z = -16;
+    waitingForPlayer.rotation.fromEulerAngles(0,Math.PI,0);
     scoreboard0.rotation.fromEulerAngles(0,0,0);
     scoreboard1.rotation.fromEulerAngles(0,0,0);
     winlose.position.z = 7;
@@ -1228,7 +1245,10 @@ function onServerCountdown(){
 function onReadyUp(type){
 //    console.log("Ready: " + type);
     startObject.playersReady++;
-    if(type!=playerType) rdy.visible = true;
+    if(type!=playerType){
+        rdy.visible = true;
+        waitingForPlayer.visible = false;
+    }
     //startObject.playersReady=2;     //TODO: remove
 }
 
@@ -1415,6 +1435,7 @@ var resetGame = function(){
     pane.visible = false;
     winlose.visible = false;
     balloons.visible = false;
+    waitingForPlayer.visible = true;
     for(var i=0;i<numbers.length;i++){
         numbers[i].position.y = 10;
         numbers[i].position.z = -7;
