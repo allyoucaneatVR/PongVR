@@ -1242,10 +1242,12 @@ var startObject = {
             var forwardVector = scene.getCamera().getForwardVector();
             var startWidth = 8;
             var startHeight = 2;
-            if (playerType == "player1")forwardVector.negate();
+            if (playerType == "player2")forwardVector.z*=-1;
+            forwardVector.negate();
             if (forwardVector.z < 0) {
                 var scaledFV = forwardVector.scaleBy((Math.abs(scene.getCamera().getManager().getGlobalPosition().z)-Math.abs(start.position.z)) / Math.abs(forwardVector.z));
                 var cameraPositionY = scene.getCamera().getManager().getGlobalPosition().y;
+                console.log(scaledFV.z);
                 if (scaledFV.x < start.scale.x * (startWidth / 2) &&
                     scaledFV.x > start.scale.x * -(startWidth / 2) &&
                     scaledFV.y < start.scale.y * (startHeight / 2) + cameraPositionY - start.position.y &&
