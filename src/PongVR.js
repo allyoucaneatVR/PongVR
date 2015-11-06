@@ -10,7 +10,6 @@
 //                 |___|               //
 /////////////////////////////////////////
 
-
 ////////////////////////////////////////////////////////////////////
 // Initialise VROne
 var isWebVRReady = VROne.HMDHandler.isWebVRReady();
@@ -680,12 +679,14 @@ function getNewBody(){
         if(duration > 250 && body.isMoving){
             if(body.animationStep === 0){
                 rotateBone(shoulderL, 0, 0, 0, 250);
-                rotateBone(uArmL, -23.281, 0, 90, 250);
+                rotateBone(uArmL, -23.281, 180, 90, 250);
+//                rotateBone(uArmL, -23.281, 0, 90, 250);
 //                rotateBone(uArmL, -90, 66.719, -90, 250);
-                rotateBone(lArmL, 0, 16.908, 0, 250);
+                rotateBone(lArmL, 0, -16.908, 0, 250);
 
                 rotateBone(shoulderR, 0, 0, 0, 250);
-                rotateBone(uArmR, 180, 61.238-90, 0, 250);//-61.238
+                rotateBone(uArmR, 90-81.238, 180, -90, 250);
+//                rotateBone(uArmR, 180, 61.238-90, 0, 250);//-61.238
 //                rotateBone(uArmR, 90, -61.238, -90, 250);//-61.238
                 rotateBone(lArmR, 0, 12.034, 0, 250);
 
