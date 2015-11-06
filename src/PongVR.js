@@ -314,7 +314,7 @@ function initScene(){
 
         start = new VROne.OBJLoader(path + "obj/start2.obj")[0];
         start.transparent = true;
-        start.position.y = 12;
+        start.position.y = 11.5;
         start.position.z = -7;
         start.scale = new VROne.Vector3(0.7,0.7,0.7);
         start.colors = null;
@@ -322,7 +322,6 @@ function initScene(){
         start.shaderUniforms = [];
         start.shaderUniforms.push(["uTime", "uniform1f", timeObject, ["time"]],["uFillTime", "uniform1f", startObject, ["time"]]);
         start.rotation.fromEulerAngles(0, Math.PI, 0);
-        //start.renderPriority = 3;
         scene.addToScene(start);
 
         numbers = [];
@@ -1245,7 +1244,7 @@ var startObject = {
             var startHeight = 2;
             if (playerType == "player1")forwardVector.negate();
             if (forwardVector.z < 0) {
-                var scaledFV = forwardVector.scaleBy((Math.abs(scene.getCamera().getManager().getGlobalPosition().z)-Math.abs(start.position.z)) / forwardVector.z);
+                var scaledFV = forwardVector.scaleBy((Math.abs(scene.getCamera().getManager().getGlobalPosition().z)-Math.abs(start.position.z)) / Math.abs(forwardVector.z));
                 var cameraPositionY = scene.getCamera().getManager().getGlobalPosition().y;
                 if (scaledFV.x < start.scale.x * (startWidth / 2) &&
                     scaledFV.x > start.scale.x * -(startWidth / 2) &&
