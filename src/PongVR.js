@@ -181,14 +181,16 @@ function initScene(){
         ball.scale.y = .2;
         ball.scale.z = .2;
         ball.transparent = true;
-        for(i=ball.colors.length/2+3;i<ball.colors.length;i+=4){
-            ball.colors[i]=0.5;
-        }
-        for(i=0;i<ball.colors.length/2;i+=4){
-            ball.colors[i]=0;
-            ball.colors[i+1]=0;
+
+        for(i=0;i<ball.colors.length;i+=4){
+            ball.colors[i]=1;
+            ball.colors[i+1]=1;
             ball.colors[i+2]=1;
             ball.colors[i+3]=1;
+        }
+
+        for(i=ball.colors.length/2+3;i<ball.colors.length;i+=4){
+            ball.colors[i]=0.5;
         }
 
         pane = new VROne.CubeTexture3D_3();
