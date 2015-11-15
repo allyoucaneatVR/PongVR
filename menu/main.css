@@ -1,0 +1,91 @@
+@font-face {
+    font-family: quicksand;
+    src: url("Quicksand-Regular.ttf");
+}
+
+body{
+    font-family: quicksand;
+    margin: 0;
+}
+a{
+    cursor: pointer;
+}
+i{
+    cursor: default;
+}
+
+/*StartMenu*/
+#pongvr-background{
+    position:fixed;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    background-image: url("PongVRBackground2.jpg");
+    background-size:cover;
+}
+#pong-vr-title{
+    text-align: center;
+    font-family: quicksand;
+    font-size: 10vw;
+    color: black;
+    margin: 0.8em auto;
+}
+#vr-mode-select{
+    margin: 0 auto;
+    display: inline-block;
+    text-align: center;
+}
+.startMenu{
+    margin: 1em;
+    padding: 1em;
+    width: 15em;
+    height: 11em;
+    text-align: center;
+
+    border-radius: 6%;
+    background-color: rgba(255, 255, 255, 0.4);
+    overflow: hidden;
+    display: inline-block;
+}
+.menu-option{
+    -webkit-transition: 0.5s ease-in-out;
+    -moz-transition: 0.5s ease-in-out;
+    -o-transition: 0.5s ease-in-out;
+    transition: 0.5s ease-in-out;
+}
+
+/*Loading Screen*/
+#loading-screen{
+    display: none;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    padding-top: 40vh;
+    background-color: white;
+    text-align: center;
+    font-size: 2em;
+}
+#loading-screen i{
+    font-size: 2em;
+}
+
+/*Settings*/
+#vrone-settings{
+    position:fixed;
+    background-color: rgba(0, 0, 0, 0.3);
+    color:white;
+    font-family: sans-serif;
+    top: 0;
+    z-index: 5;
+}
+
+/*Canvas*/
+#main-canvas{
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    display: none;
+}

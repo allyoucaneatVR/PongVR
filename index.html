@@ -1,132 +1,26 @@
 <html>
 
 <head>
-    <title>PongVR .::/All You Can Eat Edition\::.</title>
+    <title>PongVR - allyoucaneatVR</title>
     <meta http-equiv="content-type" content="text/html, charset=ISO-8859-1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
 
     <link rel="stylesheet" href="menu/font-awesome-4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="menu/main.css">
 
     <script type="text/javascript" src="lib/VROne.min.js"></script>
     <script type="text/javascript" src="lib/stats.min.js"></script>
     
     <script type="text/javascript" src="src/PongVR.js"></script>
+    <script type="text/javascript" src="menu/PongVR-menu.js"></script>
     
     <!--<script src="http://127.0.0.1:8080/socket.io/socket.io.js"></script>-->
     <script src="http://109.73.50.251:8080/socket.io/socket.io.js"></script>
 
-    <style>
-        @font-face {
-            font-family: quicksand;
-            src: url("menu/Quicksand-Regular.ttf");
-        }
-
-        body{
-            font-family: quicksand;
-        }
-
-        a{
-            cursor: pointer;
-        }
-        i{
-            cursor: default;
-        }
-        #pongvr-background{
-            position:fixed;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -2;
-            background-image: url("menu/PongVRBackground2.jpg");
-            background-size:cover;
-        }
-
-        #pong-vr-title{
-            text-align: center;
-            font-family: quicksand;
-            font-size: 10vw;
-            color: rgba(0, 0, 0, 1);
-            margin: 0.8em auto;
-        }
-        #vr-mode-select{
-            margin: 0 auto;
-            display: inline-block;
-            text-align: center;
-        }
-        .startMenu{
-    /*        cursor: pointer;*/
-            margin: 1em;
-            padding: 1em;
-            width: 15em;
-            height: 11em;
-            text-align: center;
-    /*        float: left;*/
-            border-radius: 6%;
-            background-color: rgba(255, 255, 255, 0.4);
-            overflow: hidden;
-            display: inline-block;
-        }
-        #vrone-settings{
-            position:fixed;
-            background-color: rgba(0, 0, 0, 0.3);
-            color:white;
-            font-family: sans-serif;
-            top: 0;
-            z-index: 5;
-        }
-        #main-canvas{
-            width: 100%;
-            height: 100%;
-            position: fixed;
-            top: 0;
-            display: none;
-        }
-        .menu-option{
-            -webkit-transition: 0.5s ease-in-out;
-            -moz-transition: 0.5s ease-in-out;
-            -o-transition: 0.5s ease-in-out;
-            transition: 0.5s ease-in-out;
-        }
-        #loading-screen{
-            display: none;
-            position: fixed;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            padding: 3em 0;
-            background-color: white;
-            text-align: center;
-            font-size: 5em;
-        }
-        #loading-screen i{
-            font-size: 2em;
-        }
-    </style>
-
 </head>
 
-<body style="margin: 0;">
-    
-    <div id="vrone-settings" style="display: none;">
-        <a id="showMenu" onclick="showMenu()"><i class="fa fa-cog fa-2x"></i></a>
-        <div id="menu" style="display: none;">
-            <a onclick="hideMenu()"><i class="fa fa-cog fa-2x"></i></a><br>
-            <i><b>display mode:</b></i><br>
-            <a onclick="switchMode(false, false)">- desktop</a><br>
-            <a onclick="switchMode(true, false)">- Google Cardboard</a>
-            <div id="input" >
-                <i><b>input mode:</b></i><br>
-                <a onclick="motionSensors(false)">- mouse / keyboard</a><br>
-                <a onclick="motionSensors(true)">- motion sensors</a>
-            </div>
-            <div id="distortion" style="display: none;">
-                <i><b>VR mode:</b></i><br>
-                <a onclick="switchMode(true, true)">- with distortion</a><br>
-                <a onclick="switchMode(true, false)">- without distortion</a>
-            </div>
-        </div>
-    </div>
-    
+<body>
+<!--    Title Menu-->
     <div id="titlescreen" style="text-align: center;">
         <div id="pongvr-background"></div>
         
@@ -147,7 +41,7 @@
                             Use this mode for a Desktop experience.
                         </p>
                         <p>
-                            Input controls:
+                            Input:
                             <br>
                             Mouse movment
                             <br>
@@ -257,36 +151,37 @@
             <div style="clear: both;"></div>
         </div>
     </div>
+    
+<!--    Loading Screen-->
     <div id="loading-screen">
         <i class="fa fa-spinner fa-pulse"></i>
+        <br>
+        <br>
         <div>Loading...</div>
     </div>
     
-    <script>
-        var up = [];
-        function optionAnimation(element){
-            while(up.length > 0){
-                setElement(up.pop(), 0);
-            }
-            setElement(element, element.offsetHeight);
-            
-            up.push(element);
-        }
-        function setElement(element, height){
-            var trans = "translate(0,-"+height+"px)";
-            for(var i=0; i < element.childNodes.length; i++){
-                var e = element.childNodes[i];
-                if(e.nodeType === Node.ELEMENT_NODE){
-                    e.style.transform = trans;
-                    e.style.webkitProperty = trans;
-                    e.style.MozProperty = trans;
-                    e.style.msProperty = trans;
-                    e.style.OProperty = trans;
-                }
-            }
-        }
-    </script>
+<!--    Vrone settings-->
+    <div id="vrone-settings" style="display: none;">
+        <a id="showMenu" onclick="showMenu()"><i class="fa fa-cog fa-2x"></i></a>
+        <div id="menu" style="display: none;">
+            <a onclick="hideMenu()"><i class="fa fa-cog fa-2x"></i></a><br>
+            <i><b>display mode:</b></i><br>
+            <a onclick="switchMode(false, false)">- desktop</a><br>
+            <a onclick="switchMode(true, false)">- Google Cardboard</a>
+            <div id="input" >
+                <i><b>input mode:</b></i><br>
+                <a onclick="motionSensors(false)">- mouse / keyboard</a><br>
+                <a onclick="motionSensors(true)">- motion sensors</a>
+            </div>
+            <div id="distortion" style="display: none;">
+                <i><b>VR mode:</b></i><br>
+                <a onclick="switchMode(true, true)">- with distortion</a><br>
+                <a onclick="switchMode(true, false)">- without distortion</a>
+            </div>
+        </div>
+    </div>
     
+<!--    Cancas-->
     <div id="main-canvas">
         <canvas id="canvas" style="border: none; margin: 0;"></canvas>
     </div>

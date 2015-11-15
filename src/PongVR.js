@@ -1,7 +1,6 @@
 /*jslint browser: true*/
 /*global VROne, Stats, io*/
 
-
 /////////////////////////////////////////
 //    _____             _____ _____    //
 //   |  _  |___ ___ ___|  |  | __  |   //
@@ -12,11 +11,11 @@
 
 ////////////////////////////////////////////////////////////////////
 // Initialise VROne
-var isWebVRReady = VROne.HMDHandler.isWebVRReady();
-var scene;
 var stats = new Stats();//TODO remove debug
-var distorted, mobileVR;
+var isWebVRReady = VROne.HMDHandler.isWebVRReady();//todo move to vrone
 var canvas;
+var scene;
+var mobileVR;
 
 function load(webVR, cardboard, distortion){
     document.getElementById('titlescreen').style.display = 'none';
@@ -86,14 +85,40 @@ function init(cardboard, distortion) {
     createSocket();
     tick();
 }
+function switchMode(cardboard, distortion){
+    if(cardboard){
+        mobileVR = true;
+        scene.setRendererNull();
+        scene.getCamera().getManager().modifiers = [];
+        scene.useCardboard(distortion);
+        scene.getCamera().getManager().modifiers.push(cameraConfig);
+        
+        document.getElementById("input").style.display = 'none';
+        document.getElementById("distortion").style.display = 'block';
+    }else{
+        mobileVR = false;
+        motionSensors(false);
+        scene.setRendererDesktop();
+        
+        document.getElementById("input").style.display = 'block';
+        document.getElementById("distortion").style.display = 'none';
+    }
+}
+function motionSensors(useSensor){
+    scene.getCamera().getManager().modifiers = [];
+    if(useSensor){
+        scene.useMotionSensor();
+    }else {
+        scene.getCamera().getManager().modifiers.push(new VROne.MouseKeyboard(canvas, canvas));
+    }
+    scene.getCamera().getManager().modifiers.push(cameraConfig);
+}
 
 ////////////////////////////////////////////////////////////////////
 // PongVR Objects
 var path = "assets/";
 var aquariumHeight = 10;
-var body;
-var pane;
-var paneEmpty;
+var body, pane, paneEmpty;
 var bodyParent = {
     position: new VROne.Vector3(),
     rotation: new VROne.Quaternion(),
@@ -116,10 +141,10 @@ var pillarUniform = {
     timeChange: 0,
     duration: 0
 };
-var initDone = false;
 
 ////////////////////////////////////////////////////////////////////
-// Initialise Scene Objects
+// PongVR scene setup
+
 function initScene(){
     //Set Camera Properties
     scene.getCamera().farPlane = 1000;
@@ -828,6 +853,7 @@ function negateObjectDirection(){
 
 ////////////////////////////////////////////////////////////////////
 // WebSocket Server communication
+
 var playerBodies = [];
 var playerType = null;
 //var ip = "http://127.0.0.1:8080";
@@ -843,7 +869,6 @@ function createSocket(){
 
         socket.on('connect', function () {
             console.log("Connected to Websocket");
-            initDone = true;
         });
         socket.on('reconnect', function () {
             console.log("Reconnected to Websocket");
@@ -1078,10 +1103,7 @@ function playerReady(){
 }
 
 ////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////
 // Game loop
-////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////
 
 //Vars/ Objects
 var timeObject = {
@@ -1324,7 +1346,6 @@ var startObject = {
         }
     }
 };
-
 var gameOverObject = {
     win: 0,
     runAnimation: false,
@@ -1365,19 +1386,10 @@ var gameOverObject = {
         }
     }
 };
-
 var ballRot = 0;
 
 //Main loop
 var update = function (){
-    // TODO don't test initDone by checking server connection
-    if(!initDone && false) {
-        timeObject.startTime = Date.now();
-        return;
-    }
-    else{
-        scene.render = true;
-    }
 
     if(gameOverObject.time>15000){
         resetGame();
@@ -1415,7 +1427,6 @@ var update = function (){
     if (socket)socket.emit('camera_pos', {position: cc.getGlobalPosition(), orientation: cc.getGlobalRotation()});
     tslf = timeObject.time;
 };
-
 var resetGame = function(){
     gameOverObject.win = 0;
     gameOverObject.runAnimation = false;
@@ -1451,7 +1462,6 @@ var resetGame = function(){
         winlose.position.z = 7;
     }
 };
-
 var tick = function () {
     VROne.requestAnimFrame(tick);
     stats.begin();
@@ -1459,43 +1469,4 @@ var tick = function () {
     scene.updateScene();
     scene.drawScene();
     stats.end();
-    //console.log(scene.getCamera().getManager().modifiers);
 };
-
-function showMenu(){
-    document.getElementById("menu").style.display = 'block';
-    document.getElementById("showMenu").style.display = 'none';
-}
-function hideMenu(){
-    document.getElementById("showMenu").style.display = 'block';
-    document.getElementById("menu").style.display = 'none';
-}
-function switchMode(cardboard, distortion){
-    if(cardboard){
-        mobileVR = true;
-        scene.setRendererNull();
-        scene.getCamera().getManager().modifiers = [];
-        scene.useCardboard(distortion);
-        scene.getCamera().getManager().modifiers.push(cameraConfig);
-        
-        document.getElementById("input").style.display = 'none';
-        document.getElementById("distortion").style.display = 'block';
-    }else{
-        mobileVR = false;
-        motionSensors(false);
-        scene.setRendererDesktop();
-        
-        document.getElementById("input").style.display = 'block';
-        document.getElementById("distortion").style.display = 'none';
-    }
-}
-
-function motionSensors(useSensor){
-    scene.getCamera().getManager().modifiers = [];
-    if(useSensor){
-        scene.useMotionSensor();
-    }else {
-        scene.getCamera().getManager().modifiers.push(new VROne.MouseKeyboard(canvas, canvas));
-    }
-    scene.getCamera().getManager().modifiers.push(cameraConfig);
-}
