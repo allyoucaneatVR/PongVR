@@ -12,7 +12,7 @@
 ////////////////////////////////////////////////////////////////////
 // Initialise ayce
 var stats = new Stats();
-var isWebVRReady = ayce.HMDHandler.isWebVRReady();//todo move to ayce
+var isWebVRReady = Ayce.HMDHandler.isWebVRReady();//todo move to ayce
 var canvas, scene,  mobileVR;
 
 function load(webVR, cardboard, distortion){
@@ -32,7 +32,7 @@ function load(webVR, cardboard, distortion){
 }
 function initAyce(cardboard, distortion) {
     canvas = document.getElementById("canvas");
-    scene = new ayce.Scene(canvas);
+    scene = new Ayce.Scene(canvas);
     
     var webVRSuccess = scene.useWebVR();
     //If no WebVR device is detected use desktop or mobile vr settings
@@ -107,7 +107,7 @@ function motionSensors(useSensor){
     if(useSensor){
         scene.useMotionSensor();
     }else {
-        manager.modifiers.push(new ayce.MouseKeyboard(canvas, canvas));
+        manager.modifiers.push(new Ayce.MouseKeyboard(canvas, canvas));
     }
     
     manager.modifiers.push(cameraConfig);
@@ -123,13 +123,13 @@ var bodyO3Ds, start, cursor, skybox,
 var path = "assets/";
 var aquariumHeight = 10;
 var bodyParent = {
-    position: new ayce.Vector3(),
-    rotation: new ayce.Quaternion(),
+    position: new Ayce.Vector3(),
+    rotation: new Ayce.Quaternion(),
     getGlobalRotation: function(){return this.rotation;},
     getGlobalPosition: function(){return this.position;}
 };
 var serverO3Ds = {};
-var cameraConfig = new ayce.CameraModifier();
+var cameraConfig = new Ayce.CameraModifier();
 
 var numbers = [];
 var tslf = 0;
@@ -149,12 +149,12 @@ function initScene(){
 }
 function createO3Ds(){
     //Set Light Properties
-    var light = new ayce.Light();
+    var light = new Ayce.Light();
     light.position.z = -10;
     light.position.y = 20;
     scene.addToScene(light);
 
-    skybox = new ayce.Skybox(
+    skybox = new Ayce.Skybox(
         "blue_ba.png",
         "blue_f.png",
         "blue_t.png",
@@ -169,7 +169,7 @@ function createO3Ds(){
     skybox.shaderUniforms.push(["uTime", "uniform1f", timeObject, ["time"]]);
     scene.addToScene(skybox);
 
-    bodyO3Ds = new ayce.OBJLoader(path + "obj/body.obj");
+    bodyO3Ds = new Ayce.OBJLoader(path + "obj/body.obj");
     body = getNewBody();
     body.position.z = 0.15;
     body.rotation.fromEulerAngles(0, Math.PI, 0);
@@ -178,7 +178,7 @@ function createO3Ds(){
     body.parentRotationWeight.z = 0;
     scene.addToScene(body);
 
-    platform1 = new ayce.Geometry.Box(1, 1, 1);
+    platform1 = new Ayce.Geometry.Box(1, 1, 1);
     platform1.offset.set(-platform1.a / 2, -platform1.b / 2, -platform1.c / 2);
     platform1 = platform1.getO3D();
     platform1.position.set(0, aquariumHeight - 2.40, -17);
@@ -187,7 +187,7 @@ function createO3Ds(){
     platform1.renderPriority = 1;
 //    scene.addToScene(platform1);
 
-    platform2 = new ayce.Geometry.Box(1, 1, 1);
+    platform2 = new Ayce.Geometry.Box(1, 1, 1);
     platform2.offset.set(-platform2.a / 2, -platform2.b / 2, -platform2.c / 2);
     platform2 = platform2.getO3D();
     platform2.position.set(0, aquariumHeight - 2.40, 17);
@@ -196,7 +196,7 @@ function createO3Ds(){
     platform2.renderPriority = 1;
 //    scene.addToScene(platform2);
 
-    ball = new ayce.OBJLoader(path + "obj/ball.obj")[0];
+    ball = new Ayce.OBJLoader(path + "obj/ball.obj")[0];
     ball.scale.x = .2;
     ball.scale.y = .2;
     ball.scale.z = .2;
@@ -213,7 +213,7 @@ function createO3Ds(){
         ball.colors[i]=0.5;
     }
 
-    pane = new ayce.TextureCube(path + "textures/pane3.png");
+    pane = new Ayce.TextureCube(path + "textures/pane3.png");
     pane.textureCoords = [0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0,
                         1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 0.0,
                         0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0,
@@ -226,12 +226,12 @@ function createO3Ds(){
     pane.visible = false;
     scene.addToScene(pane);
 
-    paneEmpty = new ayce.Object3D();
+    paneEmpty = new Ayce.Object3D();
     paneEmpty.position.z = -4;
     paneEmpty.parent = bodyParent;
     paneEmpty.parentRotationWeight.set(1, 1, 1);
 
-    forceField = new ayce.OBJLoader(path + "obj/forceField2.obj")[0];
+    forceField = new Ayce.OBJLoader(path + "obj/forceField2.obj")[0];
     forceField.colors = null;
     forceField.position.set(0, 10, 0);
     forceField.imageSrc = [path + "obj/textures/square1.png", path + "obj/textures/square3.png"];
@@ -246,7 +246,7 @@ function createO3Ds(){
     forceField.renderPriority = 2;
     scene.addToScene(forceField);
 
-    torus = new ayce.OBJLoader(path + "obj/Torus.obj").Torus;
+    torus = new Ayce.OBJLoader(path + "obj/Torus.obj").Torus;
     torus.position.set(0, aquariumHeight, 0);
     var scale = 5;
     torus.scale.set(scale, scale, scale);
@@ -259,11 +259,11 @@ function createO3Ds(){
         torus.shaderUniforms.push(["uEffectNr", "uniform1i", pillarUniform, ["nr"]]);
         torus.shaderUniforms.push(["uOldEffectNr", "uniform1i", pillarUniform, ["oldNr"]]);
         var sides = [];
-        var poolVec = new ayce.Vector3();
-        var poolNorm = new ayce.Vector3();
+        var poolVec = new Ayce.Vector3();
+        var poolNorm = new Ayce.Vector3();
         var radius = 4 * scale;
         var torusCount = 15;
-        var torusNormal = torus.rotation.getRotatedPoint(new ayce.Vector3(0, 0, -1));
+        var torusNormal = torus.rotation.getRotatedPoint(new Ayce.Vector3(0, 0, -1));
         for (var i = 0; i < torus.vertices.length; i += 3) {
 
             poolNorm.set(torusNormal.x, torusNormal.y, torusNormal.z);
@@ -298,7 +298,7 @@ function createO3Ds(){
     setupTorusShader();
     scene.addToScene(torus);
 
-    scoreboard0 = new ayce.OBJLoader(path + "obj/scoreboard3.obj")[0];
+    scoreboard0 = new Ayce.OBJLoader(path + "obj/scoreboard3.obj")[0];
     scoreboard0.imageSrc = path + "obj/textures/scoreboard.png";
     scoreboard0.transparent = true;
     scoreboard0.shader = path + "shader/scoreboard2";
@@ -315,7 +315,7 @@ function createO3Ds(){
     scoreboard0.rotation.fromEulerAngles(0,Math.PI,0);
     scene.addToScene(scoreboard0);
 
-    scoreboard1 = new ayce.OBJLoader(path + "obj/scoreboard3.obj")[0];
+    scoreboard1 = new Ayce.OBJLoader(path + "obj/scoreboard3.obj")[0];
     scoreboard1.imageSrc = path + "obj/textures/scoreboard.png";
     scoreboard1.transparent = true;
     scoreboard1.shader = path + "shader/scoreboard2";
@@ -332,21 +332,21 @@ function createO3Ds(){
     scoreboard1.rotation.fromEulerAngles(0,Math.PI,0);
     scene.addToScene(scoreboard1);
 
-    cursor = new ayce.OBJLoader(path + "obj/cursor.obj")[0];
+    cursor = new Ayce.OBJLoader(path + "obj/cursor.obj")[0];
     cursor.position.z = -2;
     cursor.parent = scene.getCamera();
     cursor.parent = bodyParent;
     cursor.parentPositionWeight.x = 1;
     cursor.parentPositionWeight.y = 1;
     cursor.parentPositionWeight.z = 1;
-    cursor.scale = new ayce.Vector3(0.05,0.05,1.0);
+    cursor.scale = new Ayce.Vector3(0.05,0.05,1.0);
     scene.addToScene(cursor);
 
-    start = new ayce.OBJLoader(path + "obj/start2.obj")[0];
+    start = new Ayce.OBJLoader(path + "obj/start2.obj")[0];
     start.transparent = true;
     start.position.y = 11.5;
     start.position.z = -7;
-    start.scale = new ayce.Vector3(0.7,0.7,0.7);
+    start.scale = new Ayce.Vector3(0.7,0.7,0.7);
     start.colors = null;
     start.shader = path + "shader/start";
     start.shaderUniforms = [];
@@ -356,7 +356,7 @@ function createO3Ds(){
 
     numbers = [];
     for(var i = 0; i < 5; i++){
-        numbers[i] = new ayce.OBJLoader(path + "obj/number.obj")[0];
+        numbers[i] = new Ayce.OBJLoader(path + "obj/number.obj")[0];
         numbers[i].imageSrc = path + "obj/textures/score_"+ (5 - i) +"_alpha.png";
         numbers[i].position.y = 10;
         numbers[i].position.z = -7;
@@ -370,7 +370,7 @@ function createO3Ds(){
         scene.addToScene(numbers[i]);
     }
 
-    rdy = new ayce.OBJLoader(path + "obj/rdy.obj")[0];
+    rdy = new Ayce.OBJLoader(path + "obj/rdy.obj")[0];
     rdy.transparent = true;
     rdy.visible = false;
     rdy.position.y = 11;
@@ -384,7 +384,7 @@ function createO3Ds(){
     rdy.shaderUniforms.push(["uTime", "uniform1f", timeObject, ["time"]]);
     scene.addToScene(rdy);
 
-    waitingForPlayer = new ayce.OBJLoader(path + "obj/waitingforplayer.obj")[0];
+    waitingForPlayer = new Ayce.OBJLoader(path + "obj/waitingforplayer.obj")[0];
     waitingForPlayer.imageSrc = path + "obj/textures/waitingforplayer.png";
     waitingForPlayer.position.y = 10;
     waitingForPlayer.position.z = 16;
@@ -399,7 +399,7 @@ function createO3Ds(){
     waitingForPlayer.scale.y = 3;
     scene.addToScene(waitingForPlayer);
 
-    winlose = new ayce.OBJLoader(path + "obj/youwinyoulose.obj")[0];
+    winlose = new Ayce.OBJLoader(path + "obj/youwinyoulose.obj")[0];
     winlose.rotation.fromEulerAngles(0,Math.PI,0);
     winlose.imageSrc = path + "obj/textures/youwinyoulose.png";
     winlose.shader = path + "shader/winlose";
@@ -412,172 +412,162 @@ function createO3Ds(){
     winlose.shaderUniforms.push(["uWin", "uniform1f", gameOverObject, ["win"]]);
     scene.addToScene(winlose);
 
-    function initParticles(){
-        var particles0 = new ayce.OBJLoader(path + "obj/ico.obj")[0];
-        var particles1 = new ayce.OBJLoader(path + "obj/icorandom2.obj")[0];
-
-        var colors = [
-            [244/255,67/255,54/255,1],  // red
-            [233/255,30/255,99/255,1],  // pink
-            [156/255,39/255,176/255,1], // purple
-            [103/255,58/255,183/255,1], // deep purple
-            [63/255,81/255,181/255,1],  // indigo
-            [33/255,150/255,243/255,1], // blue
-            [3/255,169/255,244/255,1],  // light blue
-            [0/255,188/255,212/255,1],  // cyan
-            [0/255,150/255,136/255,1],  // teal
-            [76/255,175/255,80/255,1],  // green
-            [139/255,195/255,74/255,1], // light green
-            [205/255,220/255,57/255,1], // lime
-            [255/255,235/255,59/255,1], // yellow
-            [255/255,193/255,7/255,1],  // amber
-            [255/255,152/255,0/255,1],  // orange
-            [255/255,87/255,34/255,1]   // deep orange
-        ];
-        var colors2 = [
-            [0.2,0.2,0.2,1],
-            [1.0,1.0,1.0,1]
-        ];
-        var outerIcoColors = [];
-        for(i=0;i<colors2.length;i++){
-            outerIcoColors[i] = [];
-            for(var j=0;j<particles1.colors.length/4;j++){
-                outerIcoColors[i] = outerIcoColors[i].concat(colors2[i]);
-            }
-        }
-        var innerIcoColors = [];
-        for(i=0;i<colors.length;i++){
-            innerIcoColors[i] = [];
-            for(j=0;j<particles0.colors.length/4;j++){
-                innerIcoColors[i] = innerIcoColors[i].concat(colors[i]);
-            }
-        }
-
-        var x, y, z, scale;
-        icoSystem0 = new ayce.ParticleSystem(scene, particles1, 200, 300000);
-        icoSystem1 = new ayce.ParticleSystem(scene, particles0, 200, 300000);
-        for(var i=0; i<icoSystem0.particles.length; i++){
-
-            x = (Math.pow(Math.random(),3)-Math.pow(Math.random(),3))*500;
-            z = (Math.pow(Math.random(),3)-Math.pow(Math.random(),3))*500;
-            var torusRadius = 5+10;
-            var torusLength = 60+10;
-            if(x<0){
-                x-=torusRadius;
-            }else{
-                x+=torusRadius;
-            }
-            if(z<0){
-                z-=torusLength;
-            }else{
-                z+=torusLength;
-            }
-            icoSystem0.particles[i].position = new ayce.Vector3(x, -50, z);
-            icoSystem1.particles[i].position = new ayce.Vector3(x, -50, z);
-
-            y = (Math.random())*0.0015;
-            icoSystem0.particles[i].velocity = new ayce.Vector3(0, y, 0);
-            icoSystem1.particles[i].velocity = new ayce.Vector3(0, y, 0);
-
-            scale = 5+Math.random()*5;
-            icoSystem0.particles[i].scale = new ayce.Vector3(scale, scale, scale);
-            icoSystem1.particles[i].scale = new ayce.Vector3(scale-2, scale-2, scale-2);
-
-            var lifetime = 300000+Math.random()*100000;
-            icoSystem0.particles[i].lifetime = lifetime;
-            icoSystem1.particles[i].lifetime = lifetime;
-
-            icoSystem0.particles[i].rotationAngle = new ayce.Vector3(
-                Math.random()*0.0001,
-                Math.random()*0.0001,
-                Math.random()*0.0001);
-            icoSystem1.particles[i].rotationAngle = new ayce.Vector3(
-                Math.random()*0.0003,
-                Math.random()*0.0003,
-                Math.random()*0.0003);
-
-            icoSystem0.particles[i].colors = outerIcoColors[Math.round(Math.random()*outerIcoColors.length-1)];
-            icoSystem1.particles[i].colors = innerIcoColors[Math.round(Math.random()*innerIcoColors.length-1)];
-        }
-        icoSystem0.initParticleArrays();
-        icoSystem0.useFragmentLighting = false;
-        icoSystem1.initParticleArrays();
-        icoSystem1.useFragmentLighting = false;
-    }
     initParticles();
     scene.addToScene(icoSystem0);
     scene.addToScene(icoSystem1);
 
-    function initBalloons(){
-        var balloon = new ayce.OBJLoader(path + "obj/balloon.obj")[0];
-
-        var colors = [
-            [244/255,67/255,54/255,1],  // red
-            [233/255,30/255,99/255,1],  // pink
-            [156/255,39/255,176/255,1], // purple
-            [103/255,58/255,183/255,1], // deep purple
-            [63/255,81/255,181/255,1],  // indigo
-            [33/255,150/255,243/255,1], // blue
-            [3/255,169/255,244/255,1],  // light blue
-            [0/255,188/255,212/255,1],  // cyan
-            [0/255,150/255,136/255,1],  // teal
-            [76/255,175/255,80/255,1],  // green
-            [139/255,195/255,74/255,1], // light green
-            [205/255,220/255,57/255,1], // lime
-            [255/255,235/255,59/255,1], // yellow
-            [255/255,193/255,7/255,1],  // amber
-            [255/255,152/255,0/255,1],  // orange
-            [255/255,87/255,34/255,1]   // deep orange
-        ];
-
-        var balloonColors = [];
-        for(i=0;i<colors.length;i++){
-            balloonColors[i] = [];
-            for(var j=0;j<balloon.colors.length/4;j++){
-                balloonColors[i] = balloonColors[i].concat(colors[i]);
-            }
-        }
-
-        balloons = new ayce.ParticleSystem(scene, balloon, 30, 0);
-        for(var i=0; i<balloons.particles.length; i++){
-            balloons.particles[i].position = new ayce.Vector3(
-                (Math.random()*2-1)*6,
-                5-Math.random()*5,
-                (Math.random()*2-1)*6);
-            balloons.particles[i].gravity = 0.00000000001;
-            balloons.particles[i].gravityExponent = 2;
-            balloons.particles[i].scale = new ayce.Vector3(.3,.3,.3);
-            balloons.particles[i].lifetime = 10000+Math.random()*5000;
-            balloons.particles[i].rotationAngle.y = Math.random()*0.001;
-            balloons.particles[i].colors = balloonColors[Math.round(Math.random()*balloonColors.length-1)];
-        }
-        balloons.initParticleArrays();
-        balloons.useFragmentLighting = false;
-        balloons.visible = false;
-    }
     initBalloons();
     scene.addToScene(balloons);
+}
+function initParticles(){
+    var particles0 = new Ayce.OBJLoader(path + "obj/ico.obj")[0];
+    var particles1 = new Ayce.OBJLoader(path + "obj/icorandom2.obj")[0];
 
-    //audioContext = new ayce.AudioContext();
-//        sound = new ayce.Sound("audio/01.wav");
-//        sound.loop = true;
-//        sound.is3D = true;
-//        sound.volume = 1;
-//        sound.position.x = -1;
-//        sound.orientationFront = new ayce.Vector3(0,0,1);
-    //sound.init(audioContext);
-//        scene.addToScene(sound);
+    var colors = [
+        [244/255,67/255,54/255,1],  // red
+        [233/255,30/255,99/255,1],  // pink
+        [156/255,39/255,176/255,1], // purple
+        [103/255,58/255,183/255,1], // deep purple
+        [63/255,81/255,181/255,1],  // indigo
+        [33/255,150/255,243/255,1], // blue
+        [3/255,169/255,244/255,1],  // light blue
+        [0/255,188/255,212/255,1],  // cyan
+        [0/255,150/255,136/255,1],  // teal
+        [76/255,175/255,80/255,1],  // green
+        [139/255,195/255,74/255,1], // light green
+        [205/255,220/255,57/255,1], // lime
+        [255/255,235/255,59/255,1], // yellow
+        [255/255,193/255,7/255,1],  // amber
+        [255/255,152/255,0/255,1],  // orange
+        [255/255,87/255,34/255,1]   // deep orange
+    ];
+    var colors2 = [
+        [0.2,0.2,0.2,1],
+        [1.0,1.0,1.0,1]
+    ];
+    var outerIcoColors = [];
+    for(i=0;i<colors2.length;i++){
+        outerIcoColors[i] = [];
+        for(var j=0;j<particles1.colors.length/4;j++){
+            outerIcoColors[i] = outerIcoColors[i].concat(colors2[i]);
+        }
+    }
+    var innerIcoColors = [];
+    for(i=0;i<colors.length;i++){
+        innerIcoColors[i] = [];
+        for(j=0;j<particles0.colors.length/4;j++){
+            innerIcoColors[i] = innerIcoColors[i].concat(colors[i]);
+        }
+    }
+
+    var x, y, z, scale;
+    icoSystem0 = new Ayce.ParticleSystem(scene, particles1, 200, 300000);
+    icoSystem1 = new Ayce.ParticleSystem(scene, particles0, 200, 300000);
+    for(var i=0; i<icoSystem0.particles.length; i++){
+
+        x = (Math.pow(Math.random(),3)-Math.pow(Math.random(),3))*500;
+        z = (Math.pow(Math.random(),3)-Math.pow(Math.random(),3))*500;
+        var torusRadius = 5+10;
+        var torusLength = 60+10;
+        if(x<0){
+            x-=torusRadius;
+        }else{
+            x+=torusRadius;
+        }
+        if(z<0){
+            z-=torusLength;
+        }else{
+            z+=torusLength;
+        }
+        icoSystem0.particles[i].position = new Ayce.Vector3(x, -50, z);
+        icoSystem1.particles[i].position = new Ayce.Vector3(x, -50, z);
+
+        y = (Math.random())*0.0015;
+        icoSystem0.particles[i].velocity = new Ayce.Vector3(0, y, 0);
+        icoSystem1.particles[i].velocity = new Ayce.Vector3(0, y, 0);
+
+        scale = 5+Math.random()*5;
+        icoSystem0.particles[i].scale = new Ayce.Vector3(scale, scale, scale);
+        icoSystem1.particles[i].scale = new Ayce.Vector3(scale-2, scale-2, scale-2);
+
+        var lifetime = 300000+Math.random()*100000;
+        icoSystem0.particles[i].lifetime = lifetime;
+        icoSystem1.particles[i].lifetime = lifetime;
+
+        icoSystem0.particles[i].rotationAngle = new Ayce.Vector3(
+            Math.random()*0.0001,
+            Math.random()*0.0001,
+            Math.random()*0.0001);
+        icoSystem1.particles[i].rotationAngle = new Ayce.Vector3(
+            Math.random()*0.0003,
+            Math.random()*0.0003,
+            Math.random()*0.0003);
+
+        icoSystem0.particles[i].colors = outerIcoColors[Math.round(Math.random()*outerIcoColors.length-1)];
+        icoSystem1.particles[i].colors = innerIcoColors[Math.round(Math.random()*innerIcoColors.length-1)];
+    }
+    icoSystem0.initParticleArrays();
+    icoSystem0.useFragmentLighting = false;
+    icoSystem1.initParticleArrays();
+    icoSystem1.useFragmentLighting = false;
+}
+function initBalloons(){
+    var balloon = new Ayce.OBJLoader(path + "obj/balloon.obj")[0];
+
+    var colors = [
+        [244/255,67/255,54/255,1],  // red
+        [233/255,30/255,99/255,1],  // pink
+        [156/255,39/255,176/255,1], // purple
+        [103/255,58/255,183/255,1], // deep purple
+        [63/255,81/255,181/255,1],  // indigo
+        [33/255,150/255,243/255,1], // blue
+        [3/255,169/255,244/255,1],  // light blue
+        [0/255,188/255,212/255,1],  // cyan
+        [0/255,150/255,136/255,1],  // teal
+        [76/255,175/255,80/255,1],  // green
+        [139/255,195/255,74/255,1], // light green
+        [205/255,220/255,57/255,1], // lime
+        [255/255,235/255,59/255,1], // yellow
+        [255/255,193/255,7/255,1],  // amber
+        [255/255,152/255,0/255,1],  // orange
+        [255/255,87/255,34/255,1]   // deep orange
+    ];
+
+    var balloonColors = [];
+    for(i=0;i<colors.length;i++){
+        balloonColors[i] = [];
+        for(var j=0;j<balloon.colors.length/4;j++){
+            balloonColors[i] = balloonColors[i].concat(colors[i]);
+        }
+    }
+
+    balloons = new Ayce.ParticleSystem(scene, balloon, 30, 0);
+    for(var i=0; i<balloons.particles.length; i++){
+        balloons.particles[i].position = new Ayce.Vector3(
+            (Math.random()*2-1)*6,
+            5-Math.random()*5,
+            (Math.random()*2-1)*6);
+        balloons.particles[i].gravity = 0.00000000001;
+        balloons.particles[i].gravityExponent = 2;
+        balloons.particles[i].scale = new Ayce.Vector3(.3,.3,.3);
+        balloons.particles[i].lifetime = 10000+Math.random()*5000;
+        balloons.particles[i].rotationAngle.y = Math.random()*0.001;
+        balloons.particles[i].colors = balloonColors[Math.round(Math.random()*balloonColors.length-1)];
+    }
+    balloons.initParticleArrays();
+    balloons.useFragmentLighting = false;
+    balloons.visible = false;
 }
 function getNewBody(){
     if(mobileVR){
-        var bodySimple = new ayce.OBJLoader(path + "obj/body_simple.obj")[0];
+        var bodySimple = new Ayce.OBJLoader(path + "obj/body_simple.obj")[0];
         bodySimple.position.y = -1.9;
         return bodySimple;
     }
     var o3Ds = {};
     for(var attr in bodyO3Ds){
         if(isNaN(attr)){
-            o3Ds[attr] = ayce.OBJLoader.prototype.copyOBJO3D(bodyO3Ds[attr]);
+            o3Ds[attr] = Ayce.OBJLoader.prototype.copyOBJO3D(bodyO3Ds[attr]);
         }
     }
 
@@ -642,7 +632,7 @@ function getNewBody(){
 
             //end
             if(p >= 1){
-                ayce.Quaternion.prototype.copyToQuaternion(this.rotateTo, this.rotation);
+                Ayce.Quaternion.prototype.copyToQuaternion(this.rotateTo, this.rotation);
                 this.rotateFrom = null;
                 this.animationActive = false;
             }
@@ -651,7 +641,7 @@ function getNewBody(){
 
     for(var bodyPart in body.bodyParts){
         var bone = body.bodyParts[bodyPart];
-        bone.rotateTo = new ayce.Quaternion();
+        bone.rotateTo = new Ayce.Quaternion();
         bone.duration = 0;
         bone.rotateFrom = null;
         bone.startAnimation = false;
@@ -687,7 +677,7 @@ function getNewBody(){
 
     body.animationStart = Date.now();
     body.animationStep = 0;
-    body.lastPos = new ayce.Vector3();
+    body.lastPos = new Ayce.Vector3();
     body.isMoving = false;
     body.stopTime = 0;
     body.onUpdate = function(){
@@ -696,7 +686,7 @@ function getNewBody(){
         var lP = body.lastPos;
         var cP = body.parent.getGlobalPosition();//body.getGlobalPosition();
 
-        if(ayce.Vector3.prototype.distance(lP, cP) > 0){
+        if(Ayce.Vector3.prototype.distance(lP, cP) > 0){
             if(!body.isMoving){
                 body.isMoving = true;
             }
@@ -917,7 +907,7 @@ function createSocket(){
 
         if(data.type == "sphere"){
 //                console.log("Adding Sphere");
-            //o3D = new ayce.Geometry.Sphere(0.2).getO3D();
+            //o3D = new Ayce.Geometry.Sphere(0.2).getO3D();
             o3D = ball;
         }
 
@@ -927,7 +917,7 @@ function createSocket(){
                 (data.id != "paneP2" || playerType != "player2")
             ){
 //                    console.log("Adding Pane");
-                o3D = new ayce.TextureCube(path + "textures/pane3.png");
+                o3D = new Ayce.TextureCube(path + "textures/pane3.png");
                 o3D.textureCoords = [0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0,
                                     1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 0.0,
                                     0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0,
@@ -1058,8 +1048,8 @@ function createSocket(){
     });
 }
 function createPlayer(id){
-    var headP = new ayce.TextureCube(path + "textures/head.gif");
-    headP.scale = new ayce.Vector3(0.3, 0.3, 0.3);
+    var headP = new Ayce.TextureCube(path + "textures/head.gif");
+    headP.scale = new Ayce.Vector3(0.3, 0.3, 0.3);
 
     var bodyP = getNewBody();
     bodyP.rotation.fromEulerAngles(0, Math.PI, 0);
@@ -1127,7 +1117,7 @@ var startObject = {
     cdDone: false,
     zFactor: 0,
     startAndCountdown: function(){
-        if(this.time<6000) {
+        if(this.time<4000) {
             var forwardVector = scene.getCamera().getForwardVector();
             var startWidth = 8;
             var startHeight = 2;
@@ -1231,7 +1221,7 @@ var timeObject = {
     startTime: Date.now()
 };
 var forceFieldObject = {
-    ballZ: new ayce.Vector3(0, 0, 0),
+    ballZ: new Ayce.Vector3(0, 0, 0),
     center: new Float32Array(9),   //up to 4 collisions with 3 coords each
     duration: 700,
     time: [
@@ -1277,7 +1267,7 @@ var scoreboardObject = {
 
 //Main loop
 function tick() {
-    ayce.requestAnimFrame(tick);
+    Ayce.requestAnimFrame(tick);
     stats.begin();
     update();
     scene.updateScene();
@@ -1324,7 +1314,7 @@ function update(){
 }
 //helper functions
 function runScoreAnimation(){
-    if(ayce.KeyboardHandler.isKeyDown("G")){   // TODO: remove
+    if(Ayce.KeyboardHandler.isKeyDown("G")){   // TODO: remove
         if(!gKeyPressed) {
             //score1++;
             //score2++;
@@ -1472,4 +1462,4 @@ function resetGame(){
         }
         winlose.position.z = 7;
     }
-};
+}

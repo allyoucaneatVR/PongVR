@@ -1,9 +1,9 @@
 /**
  * jslint browser: true
  */
-ayce.TextureCube = function (texture) {
+Ayce.TextureCube = function (texture) {
 
-    ayce.Object3D.call(this);
+    Ayce.Object3D.call(this);
     this.imageSrc = texture;
     this.vertices = [
         // Front face
@@ -127,4 +127,4 @@ ayce.TextureCube = function (texture) {
     this.calcBoundingBox();
 };
 
-ayce.TextureCube.prototype = ayce.Object3D.prototype;
+Ayce.TextureCube.prototype = Ayce.Object3D.prototype;

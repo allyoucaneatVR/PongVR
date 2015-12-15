@@ -49,7 +49,7 @@ function loadingScreenAnimation(){
     var time = Date.now()/duration;
     var color = HSVtoRGB((Math.sin(time)+1)/2, 0.2, 1);
     
-    loadingBackground.style.backgroundColor = "rgb("+color.r+", "+color.g+", "+color.b+")";
+//    loadingBackground.style.backgroundColor = "rgb("+color.r+", "+color.g+", "+color.b+")";
 
     if(animation){
         requestAnimationFrame(loadingScreenAnimation);

@@ -7,7 +7,7 @@ uniform sampler2D uSampler;
 uniform float uFillTime;
 
 void main(void) {
-	float factor = uFillTime*0.000166;
+	float factor = uFillTime*0.000266;
 	if(vTextureCoord.t<factor){
 		gl_FragColor.rgb = vec3(1.0,1.0,1.0);
 	}else{
