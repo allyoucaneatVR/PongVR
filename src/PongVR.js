@@ -28,6 +28,7 @@ function load(webVR, cardboard, distortion){
         stats.domElement.style.right = '0px';
         stats.domElement.style.top = '0px';
         document.body.appendChild(stats.domElement);
+        if(scene)scene.resize();
     }, 50);
 }
 function initAyce(cardboard, distortion) {
@@ -35,45 +36,16 @@ function initAyce(cardboard, distortion) {
     scene = new Ayce.Scene(canvas);
     
     var webVRSuccess = scene.useWebVR();
-    //If no WebVR device is detected use desktop or mobile vr settings
     if(webVRSuccess){
         scene.getCamera().getManager().modifiers.push(cameraConfig);
     }
+    //If no WebVR device is detected use desktop or mobile vr settings
     else{
         switchMode(cardboard, distortion);
     }
 
     if(webVRSuccess || mobileVR){
-        var lock = null;
-        canvas.onclick = function () {
-            var camera = scene.getCamera();
-            camera.setFullscreen(!camera.isFullscreen(), canvas);
-            
-            if(mobileVR){
-                //Mobile VR screenlock/wakeLock(TODO)
-                if(camera.isFullscreen()){
-                    if ('orientation' in screen) {
-                        screen.orientation.lock('landscape-primary');
-                    }
-                    if(window.navigator.requestWakeLock){
-                        lock = window.navigator.requestWakeLock('screen');
-                    }
-                    if(window.navigator.wakeLock){
-                        window.navigator.wakeLock.request('screen');
-                    }
-                    screen.keepAwake = true;
-                }
-                else{
-                    if ('orientation' in screen) {
-                        screen.orientation.unlock();
-                    }
-                    if(window.navigator.requestWakeLock && lock){
-                        lock.unlock();
-                    }
-                    screen.keepAwake = false;
-                }
-            }
-        };
+        scene.setFullscreenElement(canvas);
     }
 
     initScene();
