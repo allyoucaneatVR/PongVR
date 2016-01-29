@@ -1,5 +1,5 @@
 /*jslint browser: true*/
-/*global ayce, Stats, io*/
+/*global Ayce, Stats, io*/
 
 /////////////////////////////////////////
 //    _____             _____ _____    //
@@ -8,6 +8,20 @@
 //   |__|  |___|_|_|_  |\___/|__|__|   //
 //                 |___|               //
 /////////////////////////////////////////
+
+window.onload = function(){
+    load();
+    debug();
+};
+
+function debug(){
+//    forceFieldObject.addCollision(0.8, 1.0, 0.2);
+//    window.setTimeout(debug, 1000);
+    scoreboard0 = paneEmpty;
+    scoreboard1 = paneEmpty;
+    pane = paneEmpty;
+//    cursor = paneEmpty;
+}
 
 ////////////////////////////////////////////////////////////////////
 // Initialise ayce
@@ -150,23 +164,33 @@ function createO3Ds(){
     body.parentRotationWeight.z = 0;
     scene.addToScene(body);
 
-    platform1 = new Ayce.Geometry.Box(1, 1, 1);
-    platform1.offset.set(-platform1.a / 2, -platform1.b / 2, -platform1.c / 2);
+    
+    platform1 = new Ayce.Geometry.Box(6, 0.5, 3);
+    platform1.offset.set(-platform1.a / 2, 0, -platform1.c / 2);
     platform1 = platform1.getO3D();
-    platform1.position.set(0, aquariumHeight - 2.40, -17);
-    platform1.shader = path + "shader/platform";
+    platform1.position.set(0, aquariumHeight - 2.50, -17);
+//    platform1.shader = path + "shader/platform";
     platform1.transparent = true;
     platform1.renderPriority = 1;
-//    scene.addToScene(platform1);
+    platform1.colors = [];
+    for(var i=0; i < platform1.vertices.length/3; i++){
+        platform1.colors.push(0.8, 0.8, 0.8, 0.5);
+    }
+    scene.addToScene(platform1);
 
-    platform2 = new Ayce.Geometry.Box(1, 1, 1);
-    platform2.offset.set(-platform2.a / 2, -platform2.b / 2, -platform2.c / 2);
+    
+    platform2 = new Ayce.Geometry.Box(6, 0.5, 3);
+    platform2.offset.set(-platform2.a / 2, 0, -platform2.c / 2);
     platform2 = platform2.getO3D();
     platform2.position.set(0, aquariumHeight - 2.40, 17);
-    platform2.shader = path + "shader/platform";
+//    platform2.shader = path + "shader/platform";
     platform2.transparent = true;
     platform2.renderPriority = 1;
-//    scene.addToScene(platform2);
+    platform2.colors = [];
+    for(var i=0; i < platform2.vertices.length/3; i++){
+        platform2.colors.push(0.8, 0.8, 0.8, 0.5);
+    }
+    scene.addToScene(platform2);
 
     ball = new Ayce.OBJLoader(path + "obj/ball.obj")[0];
     ball.scale.x = .2;
@@ -208,6 +232,7 @@ function createO3Ds(){
     forceField.position.set(0, 10, 0);
     forceField.imageSrc = [path + "obj/textures/square1.png", path + "obj/textures/square3.png"];
     forceField.transparent = true;
+//    forceField.twoFaceTransparency = true;
     forceField.shader = path + "shader/forceField";
     forceField.shaderUniforms = [];
     forceField.shaderUniforms.push(
