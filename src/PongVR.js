@@ -172,17 +172,23 @@ function createO3Ds(){
     ball.scale.x = .2;
     ball.scale.y = .2;
     ball.scale.z = .2;
+    ball.shader = path + "shader/ball";
+    ball.shaderUniforms = [];
+    ball.shaderUniforms.push(["uTime", "uniform1f", timeObject, ["time"]]);
+    //ball.logVertexShader = true;
+    //ball.logFragmentShader = true;
     ball.transparent = true;
+    //ball.normals = null;
 
     for(i=0;i<ball.colors.length;i+=4){
-        ball.colors[i]=1;
-        ball.colors[i+1]=1;
-        ball.colors[i+2]=1;
+        ball.colors[i]=0;
+        ball.colors[i+1]=0;
+        ball.colors[i+2]=0;
         ball.colors[i+3]=1;
     }
 
     for(i=ball.colors.length/2+3;i<ball.colors.length;i+=4){
-        ball.colors[i]=0.5;
+        ball.colors[i]=0.6;
     }
 
     pane = new Ayce.TextureCube(path + "textures/pane3.png");
