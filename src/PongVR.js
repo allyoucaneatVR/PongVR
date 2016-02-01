@@ -9,10 +9,10 @@
 //                 |___|               //
 /////////////////////////////////////////
 
-window.onload = function(){
-    load();
-    debug();
-};
+//window.onload = function(){
+//    load();
+//    debug();
+//};
 
 function debug(){
 //    forceFieldObject.addCollision(0.8, 1.0, 0.2);
@@ -30,12 +30,21 @@ var isWebVRReady = Ayce.HMDHandler.isWebVRReady();//todo move to ayce
 var canvas, scene,  mobileVR;
 
 function load(webVR, cardboard, distortion){
+    if(window.location.search.substring(1) != ""){
+        gameId = window.location.search.substring(1);
+        joinGame = true;
+        joinLink = window.location;
+    }else{
+        joinLink = window.location + "?" + gameId;
+    }
+    document.getElementById("ayce-settings").innerHTML = document.getElementById("ayce-settings").innerHTML + "<p>"+joinLink+"</p>";
+
     showLoadingScreen();
     window.setTimeout(function(){
         initAyce(cardboard, distortion);
-        
+
         hideLoadingScreen();
-        
+
         stats.setMode(0);
         stats.domElement.style.position = 'absolute';
         stats.domElement.style.zIndex = '1000';
@@ -48,7 +57,7 @@ function load(webVR, cardboard, distortion){
 function initAyce(cardboard, distortion) {
     canvas = document.getElementById("canvas");
     scene = new Ayce.Scene(canvas);
-    
+
     var webVRSuccess = scene.useWebVR();
     if(webVRSuccess){
         scene.getCamera().getManager().modifiers.push(cameraConfig);
@@ -73,29 +82,29 @@ function switchMode(cardboard, distortion){
         scene.getCamera().getManager().clearModifiers();
         scene.useCardboard(distortion);
         scene.getCamera().getManager().modifiers.push(cameraConfig);
-        
+
         document.getElementById("input").style.display = 'none';
         document.getElementById("distortion").style.display = 'block';
     }else{
         mobileVR = false;
         motionSensors(false);
         scene.setRendererDesktop();
-        
+
         document.getElementById("input").style.display = 'block';
         document.getElementById("distortion").style.display = 'none';
     }
 }
 function motionSensors(useSensor){
-    var manager = scene.getCamera().getManager(); 
+    var manager = scene.getCamera().getManager();
     manager.clearModifiers();
-    
+
     //MotionSensor or KeyboardInput
     if(useSensor){
         scene.useMotionSensor();
     }else {
         manager.modifiers.push(new Ayce.MouseKeyboard(canvas, canvas));
     }
-    
+
     manager.modifiers.push(cameraConfig);
 }
 
@@ -104,7 +113,7 @@ function motionSensors(useSensor){
 var bodyO3Ds, start, cursor, skybox,
     icoSystem0, icoSystem1, forceField,
     scoreboard0, scoreboard1, torus, platform1,
-    platform2, rdy, waitingForPlayer, sound, winlose, 
+    platform2, rdy, waitingForPlayer, sound, winlose,
     balloons, ball, body, pane, paneEmpty;
 var path = "assets/";
 var aquariumHeight = 10;
@@ -125,6 +134,8 @@ var pillarUniform = {
     timeChange: 0,
     duration: 0
 };
+
+var osdPosition = new Ayce.Vector3(0, 10, 15);
 
 function initScene(){
     //Set Camera Properties
@@ -172,6 +183,7 @@ function createO3Ds(){
 //    platform1.shader = path + "shader/platform";
     platform1.transparent = true;
     platform1.renderPriority = 1;
+
     platform1.colors = [];
     for(var i=0; i < platform1.vertices.length/3; i++){
         platform1.colors.push(0.8, 0.8, 0.8, 0.5);
@@ -376,8 +388,8 @@ function createO3Ds(){
     rdy = new Ayce.OBJLoader(path + "obj/rdy.obj")[0];
     rdy.transparent = true;
     rdy.visible = false;
-    rdy.position.y = 11;
-    rdy.position.z = 17;
+    rdy.position.y = osdPosition.y;
+    rdy.position.z = osdPosition.z;
     rdy.rotation.fromEulerAngles(0,Math.PI,0);
     rdy.scale.x = 2;
     rdy.scale.y = 2;
@@ -389,8 +401,8 @@ function createO3Ds(){
 
     waitingForPlayer = new Ayce.OBJLoader(path + "obj/waitingforplayer.obj")[0];
     waitingForPlayer.imageSrc = path + "obj/textures/waitingforplayer.png";
-    waitingForPlayer.position.y = 10;
-    waitingForPlayer.position.z = 16;
+    waitingForPlayer.position.y = osdPosition.y;
+    waitingForPlayer.position.z = osdPosition.z;
     waitingForPlayer.transparent = true;
 //        waitingForPlayer.logVertexShader = true;
 //        waitingForPlayer.logFragmentShader = true;
@@ -845,8 +857,8 @@ function negateObjectDirection(){
 ////////////////////////////////////////////////////////////////////
 // WebSocket Server communication
 
-//var ip = "http://127.0.0.1:8080";
-var ip = "http://109.73.50.251:8080";
+var ip = "http://127.0.0.1:8081";
+//var ip = "http://109.73.50.251:8080";
 var socket, socketID;
 var playerBodies = [];
 var playerType = null;
@@ -856,13 +868,24 @@ function createSocket(){
         console.error("Can't connect to websocket server.");
         return;
     }
-    
+
     socket = io.connect(ip);
 
     ////////////////////////////////////////
 
     socket.on('connect', function () {
         console.log("Connected to Websocket");
+        console.log("gameId = "+gameId);
+        socket.emit('get_user_id');
+        socket.on('user_id', function(id){
+            userId = id;
+            console.log("userId = "+userId);
+            if(!joinGame){
+                socket.emit('new_game', gameId);
+            }
+            socket.emit('join_game', [gameId, userId]);
+        });
+
     });
     socket.on('reconnect', function () {
         console.log("Reconnected to Websocket");
@@ -970,7 +993,10 @@ function createSocket(){
                 continue;
             }
 
-            if(!Boolean(playerBodies[data[l].id]))createPlayer(data[l].id);
+            if(!Boolean(playerBodies[data[l].id])){
+                createPlayer(data[l].id);
+                console.log("creating player " + data[l].id);
+            }
 
             var head = playerBodies[data[l].id].head;
 
@@ -986,6 +1012,8 @@ function createSocket(){
     });
     socket.on('remove_player',  function(data){
         var p = playerBodies[data.id];
+
+        console.log("removing player with id " + data.id);
 
         for(var part in p.body.bodyParts){
             scene.removeFromScene(p.body.bodyParts[part]);
@@ -1017,7 +1045,7 @@ function createSocket(){
             forceFieldObject.addCollision(x, y, z);
         }
     });
-    socket.on('score',          function(data){
+    socket.on('score', function(data){
         scoreboardObject.updateScore(data.score1, data.score2);
         scoreboardObject.updateScore(data.score1, data.score2);
 
@@ -1048,8 +1076,15 @@ function createSocket(){
     });
     socket.on('ready_up',       function(data){
         onReadyUp(data.type);
+        console.log(data.type + " ready.");
     });
 }
+
+var gameId = Math.floor(Math.random()*10000);
+var userId;
+var joinGame = false;
+var joinLink = "";
+
 function createPlayer(id){
     var headP = new Ayce.TextureCube(path + "textures/head.gif");
     headP.scale = new Ayce.Vector3(0.3, 0.3, 0.3);
