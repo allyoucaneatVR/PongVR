@@ -9,18 +9,14 @@
 //                 |___|               //
 /////////////////////////////////////////
 
-window.onload = function(){
-    load();
-    debug();
-};
+//window.onload = function(){
+//    load();
+//    debug();
+//};
 
 function debug(){
 //    forceFieldObject.addCollision(0.8, 1.0, 0.2);
 //    window.setTimeout(debug, 1000);
-    scoreboard0 = paneEmpty;
-    scoreboard1 = paneEmpty;
-    pane = paneEmpty;
-//    cursor = paneEmpty;
 }
 
 ////////////////////////////////////////////////////////////////////

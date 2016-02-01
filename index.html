@@ -28,7 +28,18 @@
         <div id="pong-vr-title">PongVR</div>
         
         <div id="vr-mode-select">
-        <!--Desktop-->
+            <!--Info-->
+            <div class="startMenu" id="info">
+            PongVR is a new spin on the classic from 1972. 
+            Once you’ve chosen a game to join and once you’re ready to play, simply aim at the start sign in front
+            of you until it turns completely white. After your opponent does the same, the game starts. 
+            To pass the ball back to the other player simply hit it with the square “racket” in front of you. 
+            You can control the “racket’s” position using your head rotation.
+            The first player to reach 5 Points wins.
+            </div>
+            <div style="clear: both;"></div>
+           
+            <!--Desktop-->
             <div class="startMenu" id="desktop" onclick="optionAnimation(this)">
                 <div class="menu-option" style="cursor: pointer;">
                     <i class="fa fa-desktop" style="cursor: pointer;font-size: 10em;"></i>
@@ -38,15 +49,13 @@
                 <div class="menu-option">
                     <br>
                     <div style="height: auto;">
-                        <p>
-                            Use this mode for a Desktop experience.
-                        </p>
+                        Use this mode for a desktop experience.
                         <p>
                             Input:
                             <br>
                             Mouse movment
                             <br>
-                            W/A/S/D
+                            W, A, S, D Keys
                         </p>
                         
                     </div>
@@ -54,7 +63,7 @@
                 </div>
             </div>
             
-        <!--Cardboard-->
+            <!--Cardboard-->
             <div class="startMenu" id="cardboard" onclick="optionAnimation(this)">
                 <div class="menu-option" style="cursor: pointer;">
                     <img src="menu/cardboard.svg" style="height: 10em;"/>
@@ -99,7 +108,7 @@
                 </script>
             </div>
             
-        <!--WebVR-->
+            <!--WebVR-->
             <div class="startMenu" id="webvr" onclick="optionAnimation(this)">
                 <div class="menu-option" style="cursor: pointer;">
                     <script type="text/javascript">
@@ -148,7 +157,7 @@
             </div>
             
             
-        <!--End-->
+            <!--End-->
             <div style="clear: both;"></div>
         </div>
     </div>

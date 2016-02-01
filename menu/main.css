@@ -22,12 +22,13 @@ i{
     height: 100%;
     z-index: -2;
     background-image: url("PongVRBackground2.jpg");
-    background-size:cover;
+    background-size: cover;
+    background-color: grey;
 }
 #pong-vr-title{
     text-align: center;
     font-family: quicksand;
-    font-size: 10vw;
+    font-size: 5vw;
     color: black;
     margin: 0.8em auto;
 }
@@ -47,8 +48,18 @@ i{
     background-color: rgba(255, 255, 255, 0.4);
     overflow: hidden;
     display: inline-block;
+    
+    font-family: sans-serif;
+}
+#info{
+    margin: 0;
+    width: 50%;
+    height: auto;
+    
+    border-radius: 0%;
 }
 .menu-option{
+    margin-bottom: 1em;
     -webkit-transition: 0.5s ease-in-out;
     -moz-transition: 0.5s ease-in-out;
     -o-transition: 0.5s ease-in-out;
