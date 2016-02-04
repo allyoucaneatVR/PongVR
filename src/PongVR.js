@@ -215,7 +215,7 @@ function createO3Ds(){
     }
 
     for(i=ball.colors.length/2+3;i<ball.colors.length;i+=4){
-        ball.colors[i]=0.6;
+        ball.colors[i]=0.4;
     }
 
     pane = new Ayce.TextureCube(path + "textures/pane3.png");
