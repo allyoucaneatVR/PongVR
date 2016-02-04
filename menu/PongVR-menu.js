@@ -84,3 +84,73 @@ function HSVtoRGB(h, s, v) {
         b: Math.round(b * 255)
     };
 }
+
+window.addEventListener("load", function(){
+    var isOpera = (!!window.opr && !!opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0;
+    var isFirefox = typeof InstallTrigger !== 'undefined';
+    var isSafari = Object.prototype.toString.call(window.HTMLElement).indexOf('Constructor') > 0;
+    var isIE = /*@cc_on!@*/false || !!document.documentMode;
+    var isEdge = !isIE && !!window.StyleMedia;
+    var isChrome = !!window.chrome && !!window.chrome.webstore;
+    var isBlink = (isChrome || isOpera) && !!window.CSS;
+    
+    if(isSafari || isIE)document.querySelector("#browser-warning").style.display = "block";
+    
+    var startSe = document.querySelector("#start-selection");
+    var playerSe = document.querySelector("#player-selection");
+    var vrSe = document.querySelector("#vr-selection");
+    var backMulti = document.querySelector("#back-multi");    
+    
+    document.querySelector("#start" ).addEventListener("click", function(){showMenuChapter(playerSe)});
+    document.querySelector("#friend").addEventListener("click", playWithFriend);
+    document.querySelector("#random").addEventListener("click", playWithRandom);
+    backMulti.addEventListener("click", function(){showMenuChapter(playerSe);});
+//    window.addEventListener("resize", function(){});
+    
+    showMenuChapter(startSe);
+    
+    
+    function playWithFriend(){
+        var info = document.querySelector('#multi-info');
+        info.innerHTML = "Send this link to your friend: " + window.location + "?" + gameId;
+        joinID = null;
+        showMenuChapter(vrSe);
+    }
+    function playWithRandom(){
+        var info = document.querySelector('#multi-info');
+        info.innerHTML = "You are playing against a random opponent.";
+        joinID = "random";
+        showMenuChapter(vrSe);
+    }
+    
+    if(joinID){
+        var info = document.querySelector('#multi-info');
+        info.innerHTML = "You are joining a game.";
+        showMenuChapter(vrSe);
+    }
+});
+
+function showMenuChapter(chapter){
+    var selectionContainer = document.querySelector("#menu-frame");
+    if(!selectionContainer.contains(chapter))return;
+    
+    selectionContainer.style.width = chapter.clientWidth;
+    selectionContainer.style.height = chapter.clientHeight;
+    var w = 0;
+    
+    for(var i=0; i<selectionContainer.children.length; i++){
+        if(selectionContainer.children[i] === chapter)break;
+        w += selectionContainer.children[i].clientWidth;
+    }
+    for(var i=0; i<selectionContainer.children.length; i++){
+        transEl(selectionContainer.children[i], w);
+    }
+}
+function transEl(e, height){
+    var trans = "translate(-"+height+"px, 0px)";
+    e.style.transform = trans;
+    e.style.webkitProperty = trans;
+    e.style.MozProperty = trans;
+    e.style.msProperty = trans;
+    e.style.OProperty = trans;
+}

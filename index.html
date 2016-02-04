@@ -12,6 +12,7 @@
     <script type="text/javascript" src="lib/stats.min.js"></script>
     
     <script type="text/javascript" src="src/PongVR.js"></script>
+    <script type="text/javascript" src="src/Socket.js"></script>
     <script type="text/javascript" src="src/TextureCube.js"></script>
     <script type="text/javascript" src="menu/PongVR-menu.js"></script>
     
@@ -22,143 +23,194 @@
 
 <body>
 <!--    Title Menu-->
-    <div id="titlescreen" style="text-align: center;">
-        <div id="pongvr-background"></div>
+    <div id="pongvr-background"></div>
         
+    <div id="titlescreen">
         <div id="pong-vr-title">PongVR</div>
         
-        <div id="vr-mode-select">
-            <!--Info-->
-            <div class="startMenu" id="info">
-            PongVR is a new spin on the classic from 1972. 
-            Once you’ve chosen a game to join and once you’re ready to play, simply aim at the start sign in front
-            of you until it turns completely white. After your opponent does the same, the game starts. 
-            To pass the ball back to the other player simply hit it with the square “racket” in front of you. 
-            You can control the “racket’s” position using your head rotation.
-            The first player to reach 5 Points wins.
-            </div>
-            <div style="clear: both;"></div>
-           
-            <!--Desktop-->
-            <div class="startMenu" id="desktop" onclick="optionAnimation(this)">
-                <div class="menu-option" style="cursor: pointer;">
-                    <i class="fa fa-desktop" style="cursor: pointer;font-size: 10em;"></i>
+        <div>
+            <div class="startMenu box" id="info">
+                <div>
+                    <p> 
+                        PongVR is a new spin on the classic from 1972. 
+                    </p>
                     <br>
-                    Desktop
-                </div>
-                <div class="menu-option">
+                    <p>
+                        <b>Game rules:</b>
+                    </p>
+                    <p>
+                        Once you&rsquo;ve chosen a game to join and you&rsquo;re ready to play, simply aim at the start sign in front
+                        of you until it turns completely white. After your opponent does the same, the game starts. 
+                        To pass the ball back to the other player simply hit it with the square &ldquo;racket&rdquo; in front of you. 
+                        You can control the &ldquo;racket&rsquo;s&rdquo; position using your head rotation.
+                        The first player to reach 5 Points wins.
+                    </p>
                     <br>
-                    <div style="height: auto;">
-                        Use this mode for a desktop experience.
-                        <p>
-                            Input:
-                            <br>
-                            Mouse movment
-                            <br>
-                            W, A, S, D Keys
-                        </p>
-                        
-                    </div>
-                    <div onclick="load(false, false, false)" style="cursor: pointer;font-size: 2em;">Start</div>
+                    <p id="browser-warning">
+                        <i class="fa fa-warning fa-2x" style="float: left"></i>
+                        Please be aware that the <b>Safari Browser</b> and <b>Internet Explorer</b> are not supported at this time.
+                        Consider using Google Chrome or Mozilla Firefox for the best game experience.
+                    </p>
                 </div>
             </div>
-            
-            <!--Cardboard-->
-            <div class="startMenu" id="cardboard" onclick="optionAnimation(this)">
-                <div class="menu-option" style="cursor: pointer;">
-                    <img src="menu/cardboard.svg" style="height: 10em;"/>
-                    <br>
-                    Cardboard
+            <div id="info-status">
+                <div class="startMenu box" id="back-multi">
+                    <i class="fa fa-angle-double-left"></i> back
                 </div>
-                <div class="menu-option">
-                    <div id="no-webvr-cardboard">
-                        <br>
-                        <div>
-                            Use this mode for an VR-experience on your mobile device.
+                <div class="startMenu box" id="multi-info">
+                    You are playing against a random opponent
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="ani" id="menu-frame">
+                <div class="ani menu-chapter" id="start-selection">
+                    <div class="startMenu" id="start">
+                        <div class="menu-option" style="font-size: 3em">
                             <br>
-                            <b>Simple</b>: better performance
-                            <br>
-                            <b>Distorted</b>: better quality (requires a high-end Smartphone)
-                        </div>
-                        <br>
-                        <div style="font-size: 1.5em;cursor: pointer;">
-                            <div onclick="load(false, true, false)" style="display: inline;">Simple</div>
-                            <div style="display: inline;">|</div>
-                            <div onclick="load(false, true, true)" style="display: inline;">Distorted</div>
+                            Start
                         </div>
                     </div>
-                    <div id="yes-webvr-cardboard">
+                </div><!--
+                --><div class="ani menu-chapter" id="player-selection">
+                <div>
+                    <!--Random-->
+                    <div class="startMenu" id="random">
+                        <div class="menu-option" style="cursor: pointer;">
+                            <i class="fa fa-random" style="cursor: pointer;font-size: 10em;"></i>
                             <br>
-                            <div style="height: 10em;">
+                            Choose a random opponent
+                        </div>
+                    </div>
+                    <!--Friend-->
+                    <div class="startMenu" id="friend">
+                        <div class="menu-option" style="cursor: pointer;">
+                            <i class="fa fa-user" style="cursor: pointer;font-size: 10em;"></i>
+                            <br>
+                            Play against a friend
+                        </div>
+                    </div>
+                </div>
+                </div><!--
+                --><div class="ani menu-chapter" id="vr-selection">
+                    <!--Desktop-->
+                    <div class="startMenu" id="desktop" onclick="optionAnimation(this)">
+                        <div class="menu-option" style="cursor: pointer;">
+                            <i class="fa fa-desktop" style="cursor: pointer;font-size: 10em;"></i>
+                            <br>
+                            Desktop
+                        </div>
+                        <div class="menu-option">
+                            <br>
+                            <div style="height: auto;">
+                                Use this mode for a desktop experience.
                                 <p>
-                                    Your browser supports WebVR. For an better experience use the WebVR mode.
+                                    Input:
+                                    <br>
+                                    Mouse movment
+                                    <br>
+                                    W, A, S, D Keys
                                 </p>
+
+                            </div>
+                            <div onclick="load(false, false, false)" style="cursor: pointer;font-size: 2em;">Start</div>
                         </div>
                     </div>
-                </div>
-                
-                
-                <script type="text/javascript">
-                    if(isWebVRReady){
-                        document.querySelector("#no-webvr-cardboard").style.display = "none";
-                    }
-                    else{
-                        document.querySelector("#yes-webvr-cardboard").style.display = "none";
-                    }
-                </script>
-            </div>
-            
-            <!--WebVR-->
-            <div class="startMenu" id="webvr" onclick="optionAnimation(this)">
-                <div class="menu-option" style="cursor: pointer;">
-                    <script type="text/javascript">
-                        if(!isWebVRReady){
-                            document.write("<div><i class='fa fa-eye' style='color: #555;font-size: 10em;cursor: pointer;'></i><br>No WebVR dedected</div>");
-                        }
-                        else{
-                            document.write("<i class='fa fa-eye' style='font-size: 10em;'></i><br>WebVR");
-                        }
-                    </script>
-                </div>
-                <div class="menu-option">
-                    <br>
-                    <div id="no-webvr">
-                        <div>
-                            <p>
-                                Your browser dosen't support WebVR. 
+
+                    <!--Cardboard-->
+                    <div class="startMenu" id="cardboard" onclick="optionAnimation(this)">
+                        <div class="menu-option" style="cursor: pointer;">
+                            <img src="menu/cardboard.svg" style="height: 10em;"/>
+                            <br>
+                            Cardboard
+                        </div>
+                        <div class="menu-option">
+                            <div id="no-webvr-cardboard">
                                 <br>
-                                Please install a WebVR compatible browser to use this mode.
-                            </p>
+                                <div>
+                                    Use this mode for an VR-experience on your mobile device.
+                                    <br>
+                                    <b>Simple</b>: better performance
+                                    <br>
+                                    <b>Distorted</b>: better quality (requires a high-end Smartphone)
+                                </div>
+                                <br>
+                                <div style="font-size: 1.5em;cursor: pointer;">
+                                    <div onclick="load(false, true, false)" style="display: inline;">Simple</div>
+                                    <div style="display: inline;">|</div>
+                                    <div onclick="load(false, true, true)" style="display: inline;">Distorted</div>
+                                </div>
+                            </div>
+                            <div id="yes-webvr-cardboard">
+                                    <br>
+                                    <div style="height: 10em;">
+                                        <p>
+                                            Your browser supports WebVR. For an better experience use the WebVR mode.
+                                        </p>
+                                </div>
+                            </div>
                         </div>
-                        <div style="font-size: 2em;" >
-                            <a href="http://webvr.info" target="_blank" style="text-decoration: none; color: black;">More Info</a>
+
+
+                        <script type="text/javascript">
+                            if(isWebVRReady){
+                                document.querySelector("#no-webvr-cardboard").style.display = "none";
+                            }
+                            else{
+                                document.querySelector("#yes-webvr-cardboard").style.display = "none";
+                            }
+                        </script>
+                    </div>
+
+                    <!--WebVR-->
+                    <div class="startMenu" id="webvr" onclick="optionAnimation(this)">
+                        <div class="menu-option" style="cursor: pointer;">
+                            <script type="text/javascript">
+                                if(!isWebVRReady){
+                                    document.write("<div><i class='fa fa-eye' style='color: #555;font-size: 10em;cursor: pointer;'></i><br>No WebVR dedected</div>");
+                                }
+                                else{
+                                    document.write("<i class='fa fa-eye' style='font-size: 10em;'></i><br>WebVR");
+                                }
+                            </script>
+                        </div>
+                        <div class="menu-option">
+                            <br>
+                            <div id="no-webvr">
+                                <div>
+                                    <p>
+                                        Your browser dosen't support WebVR. 
+                                        <br>
+                                        Please install a WebVR compatible browser to use this mode.
+                                    </p>
+                                </div>
+                                <div style="font-size: 2em;" >
+                                    <a href="http://webvr.info" target="_blank" style="text-decoration: none; color: black;">More Info</a>
+                                </div>
+                            </div>
+                            <div id="yes-webvr">
+                                <div>
+                                    <p>
+                                        Use this mode for an VR-experience, using your VR-Headset.
+                                    </p>
+                                    <br>
+                                    <br>
+                                    <br>
+                                </div>
+                                <div onclick="if(isWebVRReady){load(true)}" style="font-size: 2em;cursor: pointer;" >Start</div>
+                            </div>
+                            <script type="text/javascript">
+                                if(isWebVRReady){
+                                    document.querySelector("#no-webvr").style.display = "none";
+                                }
+                                else{
+                                    document.querySelector("#yes-webvr").style.display = "none";
+                                }
+                            </script>
                         </div>
                     </div>
-                    <div id="yes-webvr">
-                        <div>
-                            <p>
-                                Use this mode for an VR-experience, using your VR-Headset.
-                            </p>
-                            <br>
-                            <br>
-                            <br>
-                        </div>
-                        <div onclick="if(isWebVRReady){load(true)}" style="font-size: 2em;cursor: pointer;" >Start</div>
-                    </div>
-                    <script type="text/javascript">
-                        if(isWebVRReady){
-                            document.querySelector("#no-webvr").style.display = "none";
-                        }
-                        else{
-                            document.querySelector("#yes-webvr").style.display = "none";
-                        }
-                    </script>
                 </div>
             </div>
-            
-            
-            <!--End-->
-            <div style="clear: both;"></div>
         </div>
     </div>
     
@@ -195,6 +247,20 @@
     <div id="main-canvas">
         <canvas id="canvas" style="border: none; margin: 0;"></canvas>
     </div>
+
+    <script type="text/javascript">
+      var _paq = _paq || [];
+      _paq.push(['trackPageView']);
+      _paq.push(['enableLinkTracking']);
+      (function() {
+        var u="//piwik.januskopf.com/";
+        _paq.push(['setTrackerUrl', u+'piwik.php']);
+        _paq.push(['setSiteId', 1]);
+        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+        g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+      })();
+    </script>
+    <noscript><p><img src="//piwik.januskopf.com/piwik.php?idsite=1" style="border:0;" alt="" /></p></noscript>
 </body>
 
 </html>
