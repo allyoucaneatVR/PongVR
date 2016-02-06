@@ -830,7 +830,7 @@ function negateObjectDirection(){
     start.rotation.fromEulerAngles(0, 0, 0);
     rdy.position.z = -17;
     rdy.rotation.fromEulerAngles(0,0,0);
-    waitingForPlayer.position.z = -16;
+    waitingForPlayer.position.z = -osdPosition.z;
     waitingForPlayer.rotation.fromEulerAngles(0,Math.PI,0);
     scoreboard0.rotation.fromEulerAngles(0,0,0);
     scoreboard1.rotation.fromEulerAngles(0,0,0);
