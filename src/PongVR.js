@@ -1229,6 +1229,13 @@ function onReadyUp(type){
     }
     //startObject.playersReady=2;     //TODO: remove
 }
+function onReadyCancled(type){
+    startObject.playersReady--;
+    if(type!=playerType){
+        rdy.visible = false;
+        waitingForPlayer.visible = true;
+    }
+}
 function resetGame(){
     gameOverObject.win = 0;
     gameOverObject.runAnimation = false;
