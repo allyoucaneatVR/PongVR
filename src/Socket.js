@@ -3,6 +3,7 @@
 
 //var ip = "http://127.0.0.1:8081";
 var ip = "https://januskopf.com:8080";
+
 var gameId = null;
 var socket, socketID;
 var playerBodies = [];
@@ -171,6 +172,8 @@ function socketGameCom(){
         scene.removeFromScene(p.body);
 
         playerBodies[data.id] = null;
+
+        onReadyCancled(data.type);
     });
     socket.on('collision',      function(data){
         if(data.id == "ball"){

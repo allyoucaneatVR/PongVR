@@ -25,10 +25,15 @@ void main(void) {
     vec3 transformedNormal = uNMatrix * aVertexNormal;
     vec3 normal = normalize(transformedNormal);
     vec3 eyeDirection = normalize(-position.xyz);
-    if(uLightIndex-1.0>-0.01){
-        vec3 lightDirection = normalize(uPointLightingLocations[0] - position.xyz);
-        vec3 reflectionDirection = reflect(-lightDirection, normal);
-        float diffuseLightWeighting = max(dot(normalize(transformedNormal), lightDirection), 0.0);
-        vLightWeighting += uPointLightingColors[0] * diffuseLightWeighting;
+    if(vColor.a < 0.99){
+        if(uLightIndex-1.0>-0.01){
+            vec3 lightDirection = normalize(uPointLightingLocations[0] - position.xyz);
+            vec3 reflectionDirection = reflect(-lightDirection, normal);
+            float diffuseLightWeighting = max(dot(normalize(transformedNormal), lightDirection), 0.0);
+            vLightWeighting += uPointLightingColors[0] * diffuseLightWeighting;
+        }
+    }else{
+        vLightWeighting = vec3(1.0, 1.0, 1.0);
+        vColor.rgb += vec3(0.5,0.5,0.5);
     }
 }

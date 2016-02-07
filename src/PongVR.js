@@ -215,7 +215,7 @@ function createO3Ds(){
     }
 
     for(i=ball.colors.length/2+3;i<ball.colors.length;i+=4){
-        ball.colors[i]=0.6;
+        ball.colors[i]=0.4;
     }
 
     pane = new Ayce.TextureCube(path + "textures/pane3.png");
@@ -830,7 +830,7 @@ function negateObjectDirection(){
     start.rotation.fromEulerAngles(0, 0, 0);
     rdy.position.z = -17;
     rdy.rotation.fromEulerAngles(0,0,0);
-    waitingForPlayer.position.z = -16;
+    waitingForPlayer.position.z = -osdPosition.z;
     waitingForPlayer.rotation.fromEulerAngles(0,Math.PI,0);
     scoreboard0.rotation.fromEulerAngles(0,0,0);
     scoreboard1.rotation.fromEulerAngles(0,0,0);
@@ -1228,6 +1228,13 @@ function onReadyUp(type){
         waitingForPlayer.visible = false;
     }
     //startObject.playersReady=2;     //TODO: remove
+}
+function onReadyCancled(type){
+    startObject.playersReady--;
+    if(type!=playerType){
+        rdy.visible = false;
+        waitingForPlayer.visible = true;
+    }
 }
 function resetGame(){
     gameOverObject.win = 0;
