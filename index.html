@@ -15,9 +15,10 @@
     <script type="text/javascript" src="src/Socket.js"></script>
     <script type="text/javascript" src="src/TextureCube.js"></script>
     <script type="text/javascript" src="menu/PongVR-menu.js"></script>
+    <script type="text/javascript" src="menu/qrcode.min.js"></script>
     
 <!--    <script src="http://127.0.0.1:8080/socket.io/socket.io.js"></script>-->
-    <script src="http://109.73.50.251:8080/socket.io/socket.io.js"></script>
+    <script src="https://januskopf.com:8080/socket.io/socket.io.js"></script>
 
 </head>
 
@@ -28,9 +29,9 @@
     <div id="titlescreen">
         <div id="pong-vr-title">PongVR</div>
         
-        <div>
-            <div class="startMenu box" id="info">
-                <div>
+        <div id="menu-container">
+            <div class="startMenu box ani" id="info">
+                <div class="ani" id="info_rules">
                     <p> 
                         PongVR is a new spin on the classic from 1972. 
                     </p>
@@ -39,30 +40,73 @@
                         <b>Game rules:</b>
                     </p>
                     <p>
-                        Once you&rsquo;ve chosen a game to join and you&rsquo;re ready to play, simply aim at the start sign in front
+                        Once you've chosen a game to join and you're ready to play, simply aim at the start sign in front
                         of you until it turns completely white. After your opponent does the same, the game starts. 
                         To pass the ball back to the other player simply hit it with the square &ldquo;racket&rdquo; in front of you. 
                         You can control the &ldquo;racket&rsquo;s&rdquo; position using your head rotation.
                         The first player to reach 5 Points wins.
                     </p>
                     <br>
+                    <p>
+                        If you want to play PongVR with an <b>Oculus Rift</b> you can read the 
+                        <b onclick="showWebVRInfo()" style="cursor: pointer;">WebVR Setup Instructions</b>.
+                    </p>
+                    <br>
+                    <p>
+                        PongVR is a game created with the 
+                        <a href="https://allyoucaneat.github.io" target="_blank"><b>allyoucaneatVR</b> Engine</a>.
+                    </p>
                     <p id="browser-warning">
+                        <br>
                         <i class="fa fa-warning fa-2x" style="float: left"></i>
                         Please be aware that the <b>Safari Browser</b> and <b>Internet Explorer</b> are not supported at this time.
                         Consider using Google Chrome or Mozilla Firefox for the best game experience.
                     </p>
+                </div><!--
+                --><div class="ani" id="info_opponent">
+                    <p>
+                        <b>Choose who you want to play against</b>
+                    </p>
+                    <br>
+                    <p>
+                        If you want to play against a friend a link will be generated. Send this link to
+                        a friend so he can join your game.
+                    <br>
+                        The first player to join your game will be your opponent. Every additional player will be
+                        a spectator.
+                    </p>
+                    <br>
+                    <div id="back-opp">
+                        <b><i class="fa fa-angle-double-left"></i> back</b>
+                    </div>
+                </div><!--
+                --><div class="ani" id="info_vrMode">
+                    <p>
+                        <b>Select the device you&apos;re playing PongVR on</b>
+                    </p>
+                    <br>
+                    <p>
+                        Click on the different options to learn more.
+                    </p>
+                    <p>
+                        If you want to play with an Oculus Rift choose WebVR.
+                    </p>
+                    <br>
+                    <div id="info-status"></div>
+                    <div id="link-box">
+                        <div class="startMenu box" id="multi-info"></div>
+                        <div class="startMenu box" id="qr-container" style="display: none;
+                                                                            margin: 0 auto;
+                                                                            background-color: white;"></div>
+                        <div class="startMenu box box-small" id="qr-box">QR Code</div>
+                        <div class="startMenu box" id="copy-box" style="display:none;">Copy</div>
+                    </div>
+                    <br>
+                    <div id="back-vr">
+                        <b><i class="fa fa-angle-double-left"></i> back</b>
+                    </div>
                 </div>
             </div>
-            <div id="info-status">
-                <div class="startMenu box" id="back-multi">
-                    <i class="fa fa-angle-double-left"></i> back
-                </div>
-                <div class="startMenu box" id="multi-info">
-                    You are playing against a random opponent
-                </div>
-            </div>
-        </div>
-        <div>
             <div class="ani" id="menu-frame">
                 <div class="ani menu-chapter" id="start-selection">
                     <div class="startMenu" id="start">
@@ -185,7 +229,7 @@
                                     </p>
                                 </div>
                                 <div style="font-size: 2em;" >
-                                    <a href="http://webvr.info" target="_blank" style="text-decoration: none; color: black;">More Info</a>
+                                    <a style="text-decoration: none; color: black;" onclick="showWebVRInfo()">More Info</a>
                                 </div>
                             </div>
                             <div id="yes-webvr">
@@ -209,6 +253,54 @@
                             </script>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="webvr-container">
+            <div class="startMenu box" id="webvr-text">
+                <b>WebVR Setup Instructions</b>
+                <p>
+                    If you want to play PongVR with a VR-Headset like the Oculus Rift you'll need a
+                    Web browser which supports WebVR. WebVR is a new experimental technology which enables 
+                    you to use different Headsets to show VR directly in your Browser. 
+                </p>
+                <p>
+                    Currently there are
+                    only test versions of WebVR compatible browsers, including both Mozilla Firefox and
+                    Google Chrome. Please be aware that the WebVR technology is still in development.
+                    For the beset VR experience we recommend the WebVR-Chrome version.
+                </p>
+                <div>
+                    <div style="display: inline-block; 
+                                vertical-align: top;
+                                padding: 1em;">
+                        <a href="https://drive.google.com/folderview?id=0BzudLt22BqGRbW9WTHMtOWMzNjQ&usp=sharing#list" target="_blank">
+                            <i class="fa fa-chrome fa-4x"></i>
+                            <br>
+                            <br>
+                            <b>WebVR Chrome</b><br>
+                            (recommended)
+                        </a>
+                    </div>
+                     <div style="display: inline-block; width: 2em;"></div>
+                    <div style="display: inline-block; 
+                                vertical-align: top;
+                                padding: 1em;">
+                        <a href="http://mozvr.com" target="_blank">
+                            <i class="fa fa-firefox fa-4x"></i>
+                            <br>
+                            <br>
+                            <b>WebVR Firerfox</b>
+                        </a>
+                    </div>
+                </div>
+                <p>
+                    You can find more information about WebVR on 
+                    <b><a href="http://webvr.info" target="_blank">webvr.info</a></b>.
+                </p>
+                <div>
+                    <a onclick="showMainMenu()"><b><i class="fa fa-angle-double-left"></i> back</b></a>
                 </div>
             </div>
         </div>
@@ -247,7 +339,8 @@
     <div id="main-canvas">
         <canvas id="canvas" style="border: none; margin: 0;"></canvas>
     </div>
-
+    
+<!--    piwik-->
     <script type="text/javascript">
       var _paq = _paq || [];
       _paq.push(['trackPageView']);

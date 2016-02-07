@@ -9,6 +9,8 @@ body{
 }
 a{
     cursor: pointer;
+    text-decoration: none;
+    color: black;
 }
 i{
     cursor: default;
@@ -39,18 +41,18 @@ i{
     margin: 0 auto;
     overflow: hidden;
     white-space: nowrap;
-/*    background-color: red;*/
-    width: auto;
+    width: 70%;
+    max-width: 60em;
     height: auto;
+    padding-top: 5em;
 }
 .menu-chapter{
-    width: auto;
-    white-space: nowrap;
+    width: 100%;
+    white-space: normal;
     display: inline-block;
     margin: 0;
     padding: 0;
     vertical-align: top;
-/*    background-color: blue;*/
 }
 .startMenu{
     margin: 1em;
@@ -76,23 +78,35 @@ i{
 #info{
     width: 70%;
     max-width: 60em;
-    padding: 0;
+    padding: 2em 0;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
 }
 #info p{
     margin: 0;
-    padding: 0 4em;
+    padding: 0 1em;
 }
-#info-status{
+#info > div{
+    display: inline-block;
+    vertical-align: top;
+    width: 100%;
+    white-space: normal;
+}
+
+#webvr-container{
+    display: none;
+}
+#webvr-text {
     width: 70%;
     max-width: 60em;
-    margin: 0 auto;
 }
 #multi-info{
-    width: 90%;
-    float: none;
-    margin: 0 auto;
-    padding: 0.4em 0;
-    height: 1em;
+    width: 70%;
+    max-width: 60em;
+    
+/*    padding: 0;*/
+/*    margin-top: 0.4em;*/
 }
 #back-multi{
     width: 10%;
@@ -118,6 +132,27 @@ i{
     -moz-transition: 0.5s ease-in-out;
     -o-transition: 0.5s ease-in-out;
     transition: 0.5s ease-in-out;
+}
+
+@media(max-width: 65em){
+    #info{
+        width: 100%;
+    }
+    #menu-frame{
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+    #webvr-text{
+        width: 100%;
+        padding-left: 0;
+        padding-right: 0;
+    }
+    #pong-vr-title{
+        font-size: 3em;
+        padding: 0;
+        margin: 0.5em 0;
+    }
 }
 
 /*Loading Screen*/
@@ -153,4 +188,9 @@ i{
     position: fixed;
     top: 0;
     display: none;
+}
+
+.box-small {
+    padding: 1em 0;
+    width: 10em;
 }

@@ -2,12 +2,15 @@
 /*global Ayce, io*/
 
 //var ip = "http://127.0.0.1:8081";
-var ip = "http://109.73.50.251:8080";
+var ip = "https://januskopf.com:8080";
 var gameId = null;
 var socket, socketID;
 var playerBodies = [];
 var playerType = null;
 
+if(typeof io === 'undefiend'){
+    var io = null;
+}
 
 window.addEventListener("load", function(){
     openSocket();
@@ -15,7 +18,7 @@ window.addEventListener("load", function(){
 });
 
 function openSocket(){
-    if(!io){
+    if(io === undefined || !io){
         alert("Can't connect to server. Please try again later.");
         return;
     }
@@ -23,6 +26,7 @@ function openSocket(){
 }
 //Basic socket communication
 function socketBasicCom(){
+    if(io === undefined || !io)return;
     socket.on('connect',        function () {
         console.log("Connected to Websocket");
     });
@@ -61,6 +65,7 @@ function socketBasicCom(){
 }
 //Game related communication
 function socketGameCom(){
+    if(io === undefined || !io)return;
     socket.on('id',             function(data){
         socketID = data.id;
         playerType = data.type;
