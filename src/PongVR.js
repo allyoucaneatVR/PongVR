@@ -958,12 +958,13 @@ var startObject = {
     },
     startCountdown: function(){
         if(this.cdStartTime==0){
+            pane.visible = true;
             this.cdStartTime=timeObject.time;
         }
         if(!this.cdDone && this.cdTime<5001) {
             this.cdTime = timeObject.time - this.cdStartTime;
             var i = Math.floor(this.cdTime / 1000);
-            if(i<5) {
+            if(i < 5) {
                 numbers[i].visible = true;
                 this.zFactor = this.cdTime / 1000 - i;
                 if(playerType=="player1"){
@@ -975,7 +976,7 @@ var startObject = {
             if(i>0) numbers[i-1].visible = false;
         }else{
             this.cdDone = true;
-            pane.visible = true;
+            //pane.visible = true;
         }
     }
 };
