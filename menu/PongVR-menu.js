@@ -185,7 +185,8 @@ window.addEventListener("load", function(){
     showStart();
     
     function playWithFriend(){
-        multiInfo.innerHTML = window.location.origin + window.location.pathname + "?" + gameId;
+        multiInfo.value = window.location.origin + window.location.pathname + "?" + gameId;
+        //multiInfo.innerHTML = window.location.origin + window.location.pathname + "?" + gameId;
         infoStatus.innerHTML = "Send this link to your friend: ";
         linkBox.style.display = "block";
         joinID = null;

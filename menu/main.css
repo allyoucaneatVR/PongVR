@@ -112,7 +112,10 @@ i{
 #multi-info{
     width: 70%;
     max-width: 60em;
-    
+    border:0;
+    font-family: Lato;
+    font-size: 1rem;
+    vertical-align: top;
 /*    padding: 0;*/
 /*    margin-top: 0.4em;*/
 }
