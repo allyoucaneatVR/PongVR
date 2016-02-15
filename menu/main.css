@@ -171,20 +171,46 @@ i{
 
 /*Loading Screen*/
 #loading-screen{
+    background-image: url("PongVRBackground2.jpg");
+    background-size: cover;
+    
     display: none;
     position: fixed;
     top: 0;
     width: 100%;
     height: 100%;
     padding-top: 40vh;
-    background-color: white;
+    background-color: grey;
     text-align: center;
     font-size: 2em;
 }
 #loading-screen i{
     font-size: 2em;
 }
+#loading-container{
+    height: auto;
+    width: auto;
+    padding: 2em;
+}
 
+/*Loading Screen*/
+#fullscreen-info{
+    display: none;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 100%;
+/*    padding-top: 40vh;*/
+    vertical-align: middle;
+    background-color: rgba(255, 255, 255, 0.3);
+    text-align: center;
+    font-size: 2em;
+}
+#fullscreen-info div{
+    height: auto;
+    width: auto;
+    padding: 1em;
+}
 /*Settings*/
 #ayce-settings{
     position:fixed;

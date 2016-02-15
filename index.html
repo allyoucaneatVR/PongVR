@@ -259,15 +259,14 @@
             <div class="startMenu box" id="webvr-text">
                 <b>WebVR Setup Instructions</b>
                 <p>
-                    If you want to play PongVR with a VR-Headset like the Oculus Rift you'll need a
-                    Web browser which supports WebVR. WebVR is a new experimental technology which enables 
-                    you to use different Headsets to show VR directly in your Browser. 
+                    To play PongVR in a VR headset like the Oculus Rift you need a Web browser that supports WebVR. 
+                    If you're using a Google Cardboard your regular browser will suffice. WebVR is a new technology which 
+                    enables you to use different headsets to display VR content directly in your browser.
                 </p>
                 <p>
-                    Currently there are
-                    only test versions of WebVR compatible browsers, including both Mozilla Firefox and
-                    Google Chrome. Please be aware that the WebVR technology is still in development.
-                    For the beset VR experience we recommend the WebVR-Chrome version.
+                    Currently WebVR is only supported by experimental versions of Mozilla Firefox and Google Chrome. 
+                    Please be aware that WebVR is still in development. For the best VR experience we recommend the WebVR 
+                    version of Google.
                 </p>
                 <div>
                     <div style="display: inline-block; 
@@ -308,10 +307,19 @@
     
 <!--    Loading Screen-->
     <div id="loading-screen">
-        <i class="fa fa-spinner fa-pulse"></i>
-        <br>
-        <br>
-        <div>Loading...</div>
+        <div class="startMenu" id="loading-container">
+            <i class="fa fa-spinner fa-pulse"></i>
+            <br>
+            <br>
+            <div>Loading...</div>
+        </div>
+    </div>
+    
+<!--    Fullscreen Info-->
+    <div id="fullscreen-info">
+        <div class="startMenu">
+            <div>Click here to set the game to fullscreen.</div>
+        </div>
     </div>
     
 <!--    ayce settings-->
