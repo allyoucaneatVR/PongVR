@@ -59,7 +59,9 @@ function initAyce(cardboard, distortion) {
     }
 
     if(webVRSuccess || mobileVR){
-        scene.setFullscreenElement(canvas);
+        var fullInfo = document.querySelector("#fullscreen-info");
+        fullInfo.style.display = "block";
+        scene.setFullscreenElement(fullInfo);
     }
 
     initScene();
