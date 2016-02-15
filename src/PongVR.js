@@ -120,7 +120,7 @@ var cameraConfig = new Ayce.CameraModifier();
 var numbers = [];
 var tslf = 0;
 var pillarUniform = {
-    nr: 2,
+    nr: 4,
     oldNr: 0,
     timeChange: 0,
     duration: 0
@@ -1182,6 +1182,7 @@ function pillarAnimationChange(){
         pillarUniform.oldNr = pillarUniform.nr;
         pillarUniform.nr = pillarUniform.nr < effectCount-1 ? pillarUniform.nr+1 : 0;
         pillarUniform.duration = 1000;
+        //pillarUniform.duration = 200;
 
         lastChange = timeObject.time;
     }

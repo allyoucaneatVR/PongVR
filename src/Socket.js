@@ -1,8 +1,8 @@
 /*jslint browser: true*/
 /*global Ayce, io*/
 
-//var ip = "http://127.0.0.1:8081";
-var ip = "https://januskopf.com:8080";
+var ip = "http://127.0.0.1:8081";
+//var ip = "https://januskopf.com:8080";
 
 var gameId = null;
 var socket, socketID;
@@ -172,7 +172,8 @@ function socketGameCom(){
         scene.removeFromScene(p.body);
 
         playerBodies[data.id] = null;
-
+    });
+    socket.on('cancel_ready', function(data){
         onReadyCancled(data.type);
     });
     socket.on('collision',      function(data){
