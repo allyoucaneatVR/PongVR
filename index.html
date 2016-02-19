@@ -14,11 +14,15 @@
     <script type="text/javascript" src="src/PongVR.js"></script>
     <script type="text/javascript" src="src/Socket.js"></script>
     <script type="text/javascript" src="src/TextureCube.js"></script>
+    <script type="text/javascript" src="src/PlayerModel.js"></script>
     <script type="text/javascript" src="menu/PongVR-menu.js"></script>
     <script type="text/javascript" src="menu/qrcode.min.js"></script>
     
 <!--    <script src="http://127.0.0.1:8080/socket.io/socket.io.js"></script>-->
     <script src="https://januskopf.com:8080/socket.io/socket.io.js"></script>
+    <script>
+        var isWebVRReady = Ayce.HMDHandler.isWebVRReady();
+    </script>
 
 </head>
 
@@ -94,7 +98,7 @@
                     <br>
                     <div id="info-status"></div>
                     <div id="link-box">
-                        <input class="startMenu box" id="multi-info" onClick="this.select();"/>
+                        <input class="startMenu box" id="multi-info" onclick="this.select();"/>
                         <div class="startMenu box" id="qr-container" ></div>
                         <div class="startMenu box box-small" id="qr-box">QR Code</div>
                         <div class="startMenu box" id="copy-box" style="display:none;">Copy</div>

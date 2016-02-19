@@ -1,8 +1,8 @@
 /*jslint browser: true*/
 /*global Ayce, io*/
 
-var ip = "http://127.0.0.1:8081";
-//var ip = "https://januskopf.com:8080";
+//var ip = "http://127.0.0.1:8081";
+var ip = "https://januskopf.com:8080";
 
 var gameId = null;
 var socket, socketID;
@@ -81,8 +81,6 @@ function socketGameCom(){
         var o3D = null;
 
         if(data.type == "sphere"){
-//                console.log("Adding Sphere");
-            //o3D = new Ayce.Geometry.Sphere(0.2).getO3D();
             o3D = ball;
         }
 
@@ -91,7 +89,6 @@ function socketGameCom(){
                 (data.id != "paneP1" || playerType != "player1") &&
                 (data.id != "paneP2" || playerType != "player2")
             ){
-//                    console.log("Adding Pane");
                 o3D = new Ayce.TextureCube(path + "textures/pane3.png");
                 o3D.textureCoords = [0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0,
                                     1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 0.0,
@@ -173,7 +170,7 @@ function socketGameCom(){
 
         playerBodies[data.id] = null;
     });
-    socket.on('cancel_ready', function(data){
+    socket.on('cancel_ready',   function(data){
         onReadyCancled(data.type);
     });
     socket.on('collision',      function(data){
@@ -213,6 +210,7 @@ function socketGameCom(){
                 gameOverObject.win = 1;
             }
             gameOverObject.runAnimation = true;
+            setDonutAnimation(2);
         }
         if(data.score2>=5){
             console.log("player 2 win");
@@ -221,6 +219,7 @@ function socketGameCom(){
                 gameOverObject.win = 1;
             }
             gameOverObject.runAnimation = true;
+            setDonutAnimation(2);
         }
     });
     socket.on('countdown',      function(data){
@@ -232,4 +231,52 @@ function socketGameCom(){
     });
     
     socket.emit('join_game', joinID);
+}
+
+
+//helpers
+function createPlayer(id){
+    var headP = new Ayce.TextureCube(path + "textures/head.gif");
+    headP.scale = new Ayce.Vector3(0.3, 0.3, 0.3);
+
+    var bodyP = getNewBody(mobileVR);
+    bodyP.rotation.fromEulerAngles(0, Math.PI, 0);
+    bodyP.parent = headP;
+    bodyP.parentRotationWeight.x = 0;
+    bodyP.parentRotationWeight.z = 0;
+    bodyP.useSpecularLighting = false;
+
+    scene.addToScene(headP);
+    scene.addToScene(bodyP);
+
+    playerBodies[id] = {
+        head: headP,
+        body: bodyP
+    };
+}
+function setO3DAttributes(from, to){
+    if(from.position){
+        to.position.x = from.position.x;
+        to.position.y = from.position.y;
+        to.position.z = from.position.z;
+    }
+
+    if(from.rotation){
+        to.rotation.x = from.rotation.x;
+        to.rotation.y = from.rotation.y;
+        to.rotation.z = from.rotation.z;
+        to.rotation.w = from.rotation.w;
+    }
+
+    if(from.scale){
+        to.scale.x = from.scale.x;
+        to.scale.y = from.scale.y;
+        to.scale.z = from.scale.z;
+    }
+
+    if(from.velocity){
+        to.velocity.x = from.velocity.x;
+        to.velocity.y = from.velocity.y;
+        to.velocity.z = from.velocity.z;
+    }
 }

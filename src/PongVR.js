@@ -11,23 +11,13 @@
 
 //window.onload = function(){
 //    load();
-//    debug();
 //};
-
-function debug(){
-//    forceFieldObject.addCollision(0.8, 1.0, 0.2);
-//    window.setTimeout(debug, 1000);
-}
 
 ////////////////////////////////////////////////////////////////////
 // Initialise ayce
 var stats = new Stats();
-var isWebVRReady = Ayce.HMDHandler.isWebVRReady();//todo move to ayce
 var canvas, scene,  mobileVR;
-var joinID = null;
-if(window.location.search.substring(1) != ""){
-    joinID = window.location.search.substring(1);
-}
+var joinID = window.location.search.substring(1) != "" ? joinID = window.location.search.substring(1) : null;
 
 function load(webVR, cardboard, distortion){
     showLoadingScreen();
@@ -65,6 +55,7 @@ function initAyce(cardboard, distortion) {
     }
 
     initScene();
+    createO3Ds();
     socketGameCom();
     tick();
 }
@@ -121,7 +112,7 @@ var cameraConfig = new Ayce.CameraModifier();
 
 var numbers = [];
 var tslf = 0;
-var pillarUniform = {
+var donutUniforms = {
     nr: 4,
     oldNr: 0,
     timeChange: 0,
@@ -135,15 +126,13 @@ function initScene(){
     scene.getCamera().farPlane = 1000;
     scene.getCamera().updateProjectionMatrix();
 
-    createO3Ds();
-}
-function createO3Ds(){
     //Set Light Properties
     var light = new Ayce.Light();
     light.position.z = -10;
     light.position.y = 20;
     scene.addToScene(light);
-
+}
+function createO3Ds(){
     skybox = new Ayce.Skybox(
         "blue_ba.png",
         "blue_f.png",
@@ -160,7 +149,7 @@ function createO3Ds(){
     scene.addToScene(skybox);
 
     bodyO3Ds = new Ayce.OBJLoader(path + "obj/body.obj");
-    body = getNewBody();
+    body = getNewBody(mobileVR);
     body.position.z = 0.15;
     body.rotation.fromEulerAngles(0, Math.PI, 0);
     body.parent = bodyParent;
@@ -262,10 +251,10 @@ function createO3Ds(){
         torus.shader = path + "shader/torusTube";
         torus.shaderUniforms = [];
         torus.shaderUniforms.push(["uTime", "uniform1f", timeObject, ["time"]]);
-        torus.shaderUniforms.push(["uTimeChangeEffect", "uniform1f", pillarUniform, ["timeChange"]]);
-        torus.shaderUniforms.push(["uTimeEffectDuration", "uniform1f", pillarUniform, ["duration"]]);
-        torus.shaderUniforms.push(["uEffectNr", "uniform1i", pillarUniform, ["nr"]]);
-        torus.shaderUniforms.push(["uOldEffectNr", "uniform1i", pillarUniform, ["oldNr"]]);
+        torus.shaderUniforms.push(["uTimeChangeEffect", "uniform1f", donutUniforms, ["timeChange"]]);
+        torus.shaderUniforms.push(["uTimeEffectDuration", "uniform1f", donutUniforms, ["duration"]]);
+        torus.shaderUniforms.push(["uEffectNr", "uniform1i", donutUniforms, ["nr"]]);
+        torus.shaderUniforms.push(["uOldEffectNr", "uniform1i", donutUniforms, ["oldNr"]]);
         var sides = [];
         var poolVec = new Ayce.Vector3();
         var poolNorm = new Ayce.Vector3();
@@ -566,262 +555,6 @@ function initBalloons(){
     balloons.useFragmentLighting = false;
     balloons.visible = false;
 }
-function getNewBody(){
-    if(mobileVR){
-        var bodySimple = new Ayce.OBJLoader(path + "obj/body_simple.obj")[0];
-        bodySimple.position.y = -1.9;
-        return bodySimple;
-    }
-    var o3Ds = {};
-    for(var attr in bodyO3Ds){
-        if(isNaN(attr)){
-            o3Ds[attr] = Ayce.OBJLoader.prototype.copyOBJO3D(bodyO3Ds[attr]);
-        }
-    }
-
-    var body = o3Ds.Body;
-    body.bodyParts = {};
-
-    //Arms
-    o3Ds.ShoulderL.parent = body;
-    o3Ds.ShoulderL.position.set(0.18607, 0.11481, 0);
-    body.bodyParts.ShoulderL = o3Ds.ShoulderL;
-    o3Ds.ShoulderR.parent = body;
-    o3Ds.ShoulderR.position.set(-0.18607, 0.11481, 0);
-    body.bodyParts.ShoulderR = o3Ds.ShoulderR;
-
-    o3Ds.UpperArmL.parent = o3Ds.ShoulderL;
-    o3Ds.UpperArmL.position.set(0.07292, 0, 0);
-    body.bodyParts.UpperArmL = o3Ds.UpperArmL;
-    o3Ds.UpperArmR.parent = o3Ds.ShoulderR;
-    o3Ds.UpperArmR.position.set(-0.07292, 0, 0);
-    body.bodyParts.UpperArmR = o3Ds.UpperArmR;
-    o3Ds.LowerArmL.parent = o3Ds.UpperArmL;
-    o3Ds.LowerArmL.position.set(0.33208, 0, 0);
-    body.bodyParts.LowerArmL = o3Ds.LowerArmL;
-    o3Ds.LowerArmR.parent = o3Ds.UpperArmR;
-    o3Ds.LowerArmR.position.set(-0.33208, 0, 0);
-    body.bodyParts.LowerArmR = o3Ds.LowerArmR;
-
-    //Legs
-    o3Ds.UpperLegL.parent = body;
-    o3Ds.UpperLegL.position.set(0.09408, -0.16747, 0);
-    body.bodyParts.UpperLegL = o3Ds.UpperLegL;
-    o3Ds.UpperLegR.parent = body;
-    o3Ds.UpperLegR.position.set(-0.09408, -0.16747, 0);
-    body.bodyParts.UpperLegR = o3Ds.UpperLegR;
-
-    o3Ds.LowerLegL.parent = o3Ds.UpperLegL;
-    o3Ds.LowerLegL.position.set(0, -0.65581, 0);
-    body.bodyParts.LowerLegL = o3Ds.LowerLegL;
-    o3Ds.LowerLegR.parent = o3Ds.UpperLegR;
-    o3Ds.LowerLegR.position.set(0, -0.65581, 0);
-    body.bodyParts.LowerLegR = o3Ds.LowerLegR;
-
-    o3Ds.FootL.parent = o3Ds.LowerLegL;
-    o3Ds.FootL.position.set(0, -0.65981, 0);
-    body.bodyParts.FootL = o3Ds.FootL;
-    o3Ds.FootR.parent = o3Ds.LowerLegR;
-    o3Ds.FootR.position.set(0, -0.65981, 0);
-    body.bodyParts.FootR = o3Ds.FootR;
-
-    var boneMovement = function(){
-        if(this.animationActive){
-            //start
-            if(this.rotateFrom === null || this.startAnimation){
-                this.rotateFrom = this.rotation.copy();
-                this.rotationStart = Date.now();
-                this.startAnimation = false;
-            }
-            var dur = Date.now()-this.rotationStart;
-            var p = dur/this.duration;
-
-            this.rotation.slerp(this.rotateFrom, this.rotateTo, p);
-
-            //end
-            if(p >= 1){
-                Ayce.Quaternion.prototype.copyToQuaternion(this.rotateTo, this.rotation);
-                this.rotateFrom = null;
-                this.animationActive = false;
-            }
-        }
-    };
-
-    for(var bodyPart in body.bodyParts){
-        var bone = body.bodyParts[bodyPart];
-        bone.rotateTo = new Ayce.Quaternion();
-        bone.duration = 0;
-        bone.rotateFrom = null;
-        bone.startAnimation = false;
-        bone.rotationStart = 0;
-        bone.onUpdate = boneMovement;
-        scene.addToScene(bone);
-    }
-
-    function rotateBone(o3D, ax, ay, az, duration){
-        var radToDeg = Math.PI/180;
-        o3D.rotateTo.fromEulerAngles(-ax*radToDeg, ay*radToDeg, az*radToDeg);
-        o3D.duration = duration;
-        o3D.animationActive = true;
-        o3D.startAnimation = true;
-    }
-
-
-    var shoulderL = o3Ds.ShoulderL;
-    var uArmL = o3Ds.UpperArmL;
-    var lArmL = o3Ds.LowerArmL;
-
-    var shoulderR = o3Ds.ShoulderR;
-    var uArmR = o3Ds.UpperArmR;
-    var lArmR = o3Ds.LowerArmR;
-
-    var uLegR = o3Ds.UpperLegR;
-    var lLegR = o3Ds.LowerLegR;
-    var footR = o3Ds.FootR;
-
-    var uLegL = o3Ds.UpperLegL;
-    var lLegL = o3Ds.LowerLegL;
-    var footL = o3Ds.FootL;
-
-    body.animationStart = Date.now();
-    body.animationStep = 0;
-    body.lastPos = new Ayce.Vector3();
-    body.isMoving = false;
-    body.stopTime = 0;
-    body.onUpdate = function(){
-        var duration = Date.now()-body.animationStart;
-
-        var lP = body.lastPos;
-        var cP = body.parent.getGlobalPosition();//body.getGlobalPosition();
-
-        if(Ayce.Vector3.prototype.distance(lP, cP) > 0){
-            if(!body.isMoving){
-                body.isMoving = true;
-            }
-            lP.x = cP.x;
-            lP.y = cP.y;
-            lP.z = cP.z;
-            body.stopTime = 0;
-        }
-        else{
-            if(!body.stopTime)body.stopTime = Date.now();
-            if(body.isMoving && Date.now()-body.stopTime >= 120){
-                body.isMoving = false;
-                body.animationStep = 3;
-                rotateBone(uLegR, 0, 0, 0, 250);
-                rotateBone(lLegR, 0, 0, 0, 250);
-                rotateBone(footR, 0, 0, 0, 250);
-
-                rotateBone(uLegL, 0, 0, 0, 250);
-                rotateBone(lLegL, 0, 0, 0, 250);
-                rotateBone(footL, 0, 0, 0, 250);
-            }
-        }
-
-        if(duration > 250 && body.isMoving){
-            if(body.animationStep === 0){
-                rotateBone(shoulderL, 0, 0, 0, 250);
-                rotateBone(uArmL, -23.281, 180, 90, 250);
-//                rotateBone(uArmL, -23.281, 0, 90, 250);
-//                rotateBone(uArmL, -90, 66.719, -90, 250);
-                rotateBone(lArmL, 0, -16.908, 0, 250);
-
-                rotateBone(shoulderR, 0, 0, 0, 250);
-                rotateBone(uArmR, 90-81.238, 180, -90, 250);
-//                rotateBone(uArmR, 180, 61.238-90, 0, 250);//-61.238
-//                rotateBone(uArmR, 90, -61.238, -90, 250);//-61.238
-                rotateBone(lArmR, 0, 12.034, 0, 250);
-
-                rotateBone(uLegR, -31.479, 0, 0, 250);
-                rotateBone(lLegR, 1.7, 0, 0, 250);
-                rotateBone(footR, 0, 0, 0, 250);
-
-                rotateBone(uLegL, 24.77, 0, 0, 250);
-                rotateBone(lLegL, 19.981, 0, 0, 250);
-                rotateBone(footL, -17.34, 0, 0, 250);
-            }
-            else if(body.animationStep === 1){
-
-                rotateBone(uLegR, -48.307, 0, 0, 250);
-                rotateBone(lLegR, 47.74, 0, 0, 250);
-                rotateBone(footR, 0, 0, 0, 250);
-
-                rotateBone(uLegL, 19.417, 0, 0, 250);
-                rotateBone(lLegL, 38.628, 0, 0, 250);
-                rotateBone(footL, 31.054, 0, 0, 250);
-            }
-            else if(body.animationStep === 2){
-
-                rotateBone(uLegR, -0.009, 0, 0, 250);
-                rotateBone(lLegR, -0.106, 0, 0, 250);
-                rotateBone(footR, 0, 0, 0, 250);
-
-                rotateBone(uLegL, -30.57, 0, 0, 250);
-                rotateBone(lLegL, 104.316, 0, 0, 250);
-                rotateBone(footL, 8.334, 0, 0, 250);
-            }
-            else if(body.animationStep === 3){
-
-                rotateBone(uLegR, 14.35, 0, 0, 250);
-                rotateBone(lLegR, 4.628, 0, 0, 250);
-                rotateBone(footR, 1.265, 0, 0, 250);
-
-                rotateBone(uLegL, -36.939, 0, 0, 250);
-                rotateBone(lLegL, 51.693, 0, 0, 250);
-                rotateBone(footL, 20.286, 0, 0, 250);
-            }
-            else if(body.animationStep === 4){
-
-                rotateBone(uLegR, 19.591, 0, 0, 250);
-                rotateBone(lLegR, 35.719, 0, 0, 250);
-                rotateBone(footR, 16.323, 0, 0, 250);
-
-                rotateBone(uLegL, -32.129, 0, 0, 250);
-                rotateBone(lLegL, 0.071, 0, 0, 250);
-                rotateBone(footL, 1.182, 0, 0, 250);
-            }
-            else if(body.animationStep === 5){
-
-                rotateBone(uLegR, 16.179, 0, 0, 250);
-                rotateBone(lLegR, 30.931, 0, 0, 250);
-                rotateBone(footR, 39.963, 0, 0, 250);
-
-                rotateBone(uLegL, -32.655, 0, 0, 250);
-                rotateBone(lLegL, 32.212, 0, 0, 250);
-                rotateBone(footL, 1.182, 0, 0, 250);
-            }
-            else if(body.animationStep === 6){
-
-                rotateBone(uLegR, -26.711, 0, 0, 250);
-                rotateBone(lLegR, 98.14, 0, 0, 250);
-                rotateBone(footR, 22.045, 0, 0, 250);
-
-                rotateBone(uLegL, -0.231, 0, 0, 250);
-                rotateBone(lLegL, 0.247, 0, 0, 250);
-                rotateBone(footL, 1.182, 0, 0, 250);
-            }
-            else if(body.animationStep === 7){
-
-                rotateBone(uLegR, -36.355, 0, 0, 250);
-                rotateBone(lLegR, 54.316, 0, 0, 250);
-                rotateBone(footR, 22.045, 0, 0, 250);
-
-                rotateBone(uLegL, 18.379, 0, 0, 250);
-                rotateBone(lLegL, 0.247, 0, 0, 250);
-                rotateBone(footL, 6.156, 0, 0, 250);
-
-                body.animationStep = -1;
-            }
-            body.animationStep++;
-
-            body.animationStart = Date.now();
-        }
-    };
-    body.position.y = -0.35;
-    body.position.z = 0.15;
-
-    return body;
-}
 function negateObjectDirection(){
     for(var i=0;i<numbers.length;i++){
         numbers[i].position.z = 7;
@@ -845,58 +578,6 @@ function negateObjectDirection(){
     //    scoreboard0.rotation.fromEulerAngles(0, 0, 0);
     //    scoreboard1.rotation.fromEulerAngles(0, 0, 0);
     //}
-}
-
-////////////////////////////////////////////////////////////////////
-// WebSocket Server communication
-
-function createPlayer(id){
-    var headP = new Ayce.TextureCube(path + "textures/head.gif");
-    headP.scale = new Ayce.Vector3(0.3, 0.3, 0.3);
-
-    var bodyP = getNewBody();
-    bodyP.rotation.fromEulerAngles(0, Math.PI, 0);
-    bodyP.parent = headP;
-    bodyP.parentRotationWeight.x = 0;
-    bodyP.parentRotationWeight.z = 0;
-    bodyP.useSpecularLighting = false;
-
-    scene.addToScene(headP);
-    scene.addToScene(bodyP);
-
-    playerBodies[id] = {
-        head: headP,
-        body: bodyP
-    };
-}
-function setO3DAttributes(from, to){
-    if(from.position){
-        to.position.x = from.position.x;
-        to.position.y = from.position.y;
-        to.position.z = from.position.z;
-    }
-
-    if(from.rotation){
-        to.rotation.x = from.rotation.x;
-        to.rotation.y = from.rotation.y;
-        to.rotation.z = from.rotation.z;
-        to.rotation.w = from.rotation.w;
-    }
-
-    if(from.scale){
-        to.scale.x = from.scale.x;
-        to.scale.y = from.scale.y;
-        to.scale.z = from.scale.z;
-    }
-
-    if(from.velocity){
-        to.velocity.x = from.velocity.x;
-        to.velocity.y = from.velocity.y;
-        to.velocity.z = from.velocity.z;
-    }
-}
-function sendPlayerIsReady(){
-    if (socket)socket.emit('player_ready', {ready: true});
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -950,7 +631,7 @@ var startObject = {
             start.visible = false;
             cursor.visible = false;
             this.startDone = true;
-            sendPlayerIsReady();
+            if(socket)socket.emit('player_ready', {ready: true});
         }
         if(this.playersReady>1){
             this.startCountdown();
@@ -1094,7 +775,7 @@ function update(){
         forceFieldObject.ballZ.y = (pane.position.z+20)/40;
     }
 
-    pillarAnimationChange();
+//    donutAutoAnimation();
 
     tslf = timeObject.time - tslf;
 
@@ -1178,18 +859,18 @@ function runScoreAnimation(){
         scoreboard1.visible = true;
     }
 }
-function pillarAnimationChange(){
-
-    if(lastChange+changeRate <= timeObject.time){
-        pillarUniform.timeChange = timeObject.time;
-        pillarUniform.oldNr = pillarUniform.nr;
-        pillarUniform.nr = pillarUniform.nr < effectCount-1 ? pillarUniform.nr+1 : 0;
-        pillarUniform.duration = 1000;
-        //pillarUniform.duration = 200;
-
-        lastChange = timeObject.time;
-    }
-
+function donutAutoAnimation(){
+    if(lastChange+changeRate > timeObject.time)return;
+    setDonutAnimation(donutUniforms.nr < effectCount-1 ? donutUniforms.nr+1 : 0);
+    lastChange = timeObject.time;
+}
+function setDonutAnimation(effectNr, changeDuration){
+    changeDuration = changeDuration || 1000;
+    
+    donutUniforms.timeChange = timeObject.time;
+    donutUniforms.oldNr = donutUniforms.nr;
+    donutUniforms.nr = effectNr;
+    donutUniforms.duration = changeDuration;
 }
 function updatePanePositions(){
     var cc = scene.getCamera().getManager();
@@ -1241,6 +922,7 @@ function onReadyCancled(type){
     }
 }
 function resetGame(){
+    setDonutAnimation(4);
     gameOverObject.win = 0;
     gameOverObject.runAnimation = false;
     gameOverObject.time = 0;
