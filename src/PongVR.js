@@ -197,6 +197,12 @@ function createO3Ds(){
     //ball.logFragmentShader = true;
     ball.transparent = true;
     //ball.normals = null;
+    ball.collideWith = [forceField, pane];
+    ball.onCollision = function(collisionData){
+        var normal = collisionData.collisionVector.normal.copy();
+        normal.scaleBy(-2*normal.dotProduct(ball.velocity));
+        ball.velocity = ball.velocity.addVector3(normal);
+    };
 
     for(i=0;i<ball.colors.length;i+=4){
         ball.colors[i]=0;
