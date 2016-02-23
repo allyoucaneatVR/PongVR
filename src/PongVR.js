@@ -9,24 +9,26 @@
 //                 |___|               //
 /////////////////////////////////////////
 
-//window.onload = function(){
-//    load();
+window.addEventListener("load", function(){
+    load();
 //    window.setTimeout(function(){
-//        resetGame();
 //        startObject.playersReady = 2;
 //        setDonutAnimation(7, 1);
 //    }, 2000);
-//};
+});
+window.addEventListener("load", createSocket);
 
 
 ////////////////////////////////////////////////////////////////////
 // Initialise ayce
 var stats = new Stats();
-var canvas, scene,  mobileVR;
+var canvas, scene, mobileVR, game;
+var playerPosition = new Ayce.CameraModifier();
 var joinID = window.location.search.substring(1) !== "" ? joinID = window.location.search.substring(1) : null;
 var socket = null;
 var gameId = null;
-window.addEventListener("load", function(){
+
+function createSocket(){
     socket = new PongVRSocket(io);
     socket.onGameID = function (id){
         gameId = id;
@@ -34,8 +36,7 @@ window.addEventListener("load", function(){
     };
     socket.openSocket();
     socket.socketBasicCom();
-});
-
+}
 function load(webVR, cardboard, distortion){
     showLoadingScreen();
     window.setTimeout(function(){
@@ -58,7 +59,7 @@ function initAyce(cardboard, distortion) {
 
     var webVRSuccess = scene.useWebVR();
     if(webVRSuccess){
-        scene.getCamera().getManager().modifiers.push(cameraConfig);
+        scene.getCamera().getManager().modifiers.push(playerPosition);
     }
     //If no WebVR device is detected use desktop or mobile vr settings
     else{
@@ -70,21 +71,23 @@ function initAyce(cardboard, distortion) {
         fullInfo.style.display = "block";
         scene.setFullscreenElement(fullInfo);
     }
-
-    initScene();
-    createO3Ds();
-    setupGame(socket);
+    
+    game = new Game(scene, socket);
+    game.initScene();
+    game.createO3Ds();
+    game.setupGame(socket);
     socket.socketGameCom();
     
     tick();
 }
+//helpers
 function switchMode(cardboard, distortion){
     if(cardboard){
         mobileVR = true;
         scene.setRendererNull();
         scene.getCamera().getManager().clearModifiers();
         scene.useCardboard(distortion);
-        scene.getCamera().getManager().modifiers.push(cameraConfig);
+        scene.getCamera().getManager().modifiers.push(playerPosition);
 
         document.getElementById("input").style.display = 'none';
         document.getElementById("distortion").style.display = 'block';
@@ -108,7 +111,7 @@ function motionSensors(useSensor){
         manager.modifiers.push(new Ayce.MouseKeyboard(canvas, canvas));
     }
 
-    manager.modifiers.push(cameraConfig);
+    manager.modifiers.push(playerPosition);
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -117,7 +120,7 @@ function tick() {
     Ayce.requestAnimFrame(tick);
     
     stats.begin();
-    update();
+    game.update();
     scene.updateScene();
     scene.drawScene();
     stats.end();

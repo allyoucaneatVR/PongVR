@@ -1,5 +1,5 @@
-function getNewBody(useSimple){
-    var body = useSimple ? createSimplePlayerModel() : createComplexPlayerModel();
+function getNewBody(bodyParts, useSimple){
+    var body = useSimple ? createSimplePlayerModel() : createComplexPlayerModel(bodyParts);
     return body;
 }
 
@@ -8,11 +8,11 @@ function createSimplePlayerModel(){
     bodySimple.position.y = -1.9;
     return bodySimple;
 }
-function createComplexPlayerModel(){
+function createComplexPlayerModel(bodyParts){
     var o3Ds = {};
-    for(var attr in bodyO3Ds){
+    for(var attr in bodyParts){
         if(isNaN(attr)){
-            o3Ds[attr] = Ayce.OBJLoader.prototype.copyOBJO3D(bodyO3Ds[attr]);
+            o3Ds[attr] = Ayce.OBJLoader.prototype.copyOBJO3D(bodyParts[attr]);
         }
     }
 
