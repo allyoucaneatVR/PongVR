@@ -85,7 +85,7 @@ void main(void) {
 }
 
 vec3 getEffectColor(int effect){
-    //effect = 5;
+    //effect = 7;
 	vec3 color = vec3(0.0);
 	
 	if(effect == 0){//TOP DOWN
@@ -200,6 +200,29 @@ vec3 getEffectColor(int effect){
 		
 		color.r = c1;
 		color.g = c2;
+	}
+	else if(effect == 7){//countdown
+		float random = fract(aTextureCoord.y);
+		float nr = floor(aTextureCoord.y);
+		float dCount = 15.0;
+
+		float time = (uTime - floor(aTextureCoord.y)*400.0)/1000.0;
+		float offset = 400.0;
+		
+		float c1 = (aVertexPosition.y/5.0) * cos(time) + (aVertexPosition.x/5.0) * sin(time);
+		float c2 = (aVertexPosition.y/5.0) * sin(-time) + (aVertexPosition.x/5.0) * cos(-time);
+		color.r = c1 * c2;
+		
+		c1 = (aVertexPosition.y/5.0) * cos(time + offset) + (aVertexPosition.x/5.0) * sin(time + offset);
+		c2 = (aVertexPosition.y/5.0) * sin(-time - offset) + (aVertexPosition.x/5.0) * cos(-time - offset);
+		color.g = c1 * c2;
+		
+		c1 = (aVertexPosition.y/5.0) * cos(time + offset*2.0) + (aVertexPosition.x/5.0) * sin(time + offset*2.0);
+		c2 = (aVertexPosition.y/5.0) * sin(-time - offset*2.0) + (aVertexPosition.x/5.0) * cos(-time - offset*2.0);
+		color.b = c1 * c2;
+		
+		float countdown = step(1.0, abs(nr-dCount/2.0)/(max(0.0, 5.0)));// - 5.0*((uTime-uTimeChangeEffect)/5000.0)
+		color.rgb = (0.4 - color.rgb*2.0)*countdown + (0.4 - color.rgb*2.0)*0.2*(1.0-countdown);
 	}
 	
 	return color;

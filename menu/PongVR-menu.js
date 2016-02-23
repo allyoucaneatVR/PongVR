@@ -56,9 +56,9 @@ function loadingScreenAnimation(){
     }
 }
 function hideLoadingScreen(){
-        animation = false;
-        document.getElementById('ayce-settings').style.display = 'block';
-        loadingBackground.style.display = 'none';
+    animation = false;
+    document.getElementById('ayce-settings').style.display = 'block';
+    loadingBackground.style.display = 'none';
 }
 function HSVtoRGB(h, s, v) {
     var r, g, b, i, f, p, q, t;
