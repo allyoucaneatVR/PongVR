@@ -1,10 +1,11 @@
 var Game = function(scene, socket){
     ////////////////////////////////////////////////////////////////////
     // PongVR scene setup
-    var bodyO3Ds, start, cursor, skybox,
+    //TODO move to O3Ds:
+    var bodyO3Ds, start,
         icoSystem0, icoSystem1, forceField,
-        scoreboard0, scoreboard1, torus, platform1,
-        platform2, rdy, waitingForPlayer, sound, winlose,
+        scoreboard0, scoreboard1, torus,
+        rdy, waitingForPlayer, sound, winlose,
         balloons, ball, body, pane, paneEmpty;
     var O3Ds = {};
     var serverO3Ds = {};
@@ -34,13 +35,25 @@ var Game = function(scene, socket){
         scene.getCamera().updateProjectionMatrix();
 
         //Set Light Properties
-        var light = new Ayce.Light();
-        light.position.z = -10;
-        light.position.y = 20;
-        scene.addToScene(light);
+        var intensity = 0.3;
+        var light1 = new Ayce.Light();
+        light1.color.red   = intensity;
+        light1.color.green = intensity;
+        light1.color.blue  = intensity;
+        light1.position.y = 0;
+        light1.position.z = -50;
+        scene.addToScene(light1);
+        
+        var light2 = new Ayce.Light();
+        light2.color.red   = intensity;
+        light2.color.green = intensity;
+        light2.color.blue  = intensity;
+        light2.position.y = 0;
+        light2.position.z = 50;
+        scene.addToScene(light2);
     };
     this.createO3Ds = function(){
-        skybox = new Ayce.Skybox(
+        var skybox = O3Ds.skybox = new Ayce.Skybox(
             "blue_ba.png",
             "blue_f.png",
             "blue_t.png",
@@ -53,7 +66,7 @@ var Game = function(scene, socket){
         skybox.shader = path + "shader/skybox";
         skybox.shaderUniforms = [];
         skybox.shaderUniforms.push(["uTime", "uniform1f", timeObject, ["time"]]);
-        scene.addToScene(skybox);
+//        scene.addToScene(skybox);
 
         bodyO3Ds = new Ayce.OBJLoader(path + "obj/body.obj");
         body = getNewBody(bodyO3Ds, mobileVR);
@@ -65,7 +78,7 @@ var Game = function(scene, socket){
         scene.addToScene(body);
 
 
-        platform1 = new Ayce.Geometry.Box(6, 0.5, 3);
+        var platform1 = O3Ds.platform1 = new Ayce.Geometry.Box(6, 0.5, 3);
         platform1.offset.set(-platform1.a / 2, 0, -platform1.c / 2);
         platform1 = platform1.getO3D();
         platform1.position.set(0, aquariumHeight - 2.50, -17);
@@ -80,7 +93,7 @@ var Game = function(scene, socket){
         scene.addToScene(platform1);
 
 
-        platform2 = new Ayce.Geometry.Box(6, 0.5, 3);
+        var platform2 = O3Ds.platform2 = new Ayce.Geometry.Box(6, 0.5, 3);
         platform2.offset.set(-platform2.a / 2, 0, -platform2.c / 2);
         platform2 = platform2.getO3D();
         platform2.position.set(0, aquariumHeight - 2.40, 17);
@@ -137,7 +150,7 @@ var Game = function(scene, socket){
         forceField = new Ayce.OBJLoader(path + "obj/forceField2.obj")[0];
         forceField.colors = null;
         forceField.position.set(0, 10, 0);
-        forceField.imageSrc = [path + "obj/textures/square1.png", path + "obj/textures/square3.png"];
+        forceField.imageSrc = path + "obj/textures/square1.png";//[path + "obj/textures/square1.png", path + "obj/textures/square3.png"];
         forceField.transparent = true;
     //    forceField.twoFaceTransparency = true;
         forceField.shader = path + "shader/forceField";
@@ -236,7 +249,7 @@ var Game = function(scene, socket){
         scoreboard1.rotation.fromEulerAngles(0,Math.PI,0);
         scene.addToScene(scoreboard1);
 
-        cursor = new Ayce.OBJLoader(path + "obj/cursor.obj")[0];
+        var cursor = O3Ds.cursor = new Ayce.OBJLoader(path + "obj/cursor.obj")[0];
         cursor.position.z = -2;
         cursor.parent = scene.getCamera();
         cursor.parent = bodyParent;
@@ -293,8 +306,6 @@ var Game = function(scene, socket){
         waitingForPlayer.position.y = osdPosition.y;
         waitingForPlayer.position.z = osdPosition.z;
         waitingForPlayer.transparent = true;
-    //        waitingForPlayer.logVertexShader = true;
-    //        waitingForPlayer.logFragmentShader = true;
         waitingForPlayer.colors = null;
         waitingForPlayer.shader = path + "shader/rdy";
         waitingForPlayer.shaderUniforms = [];
@@ -322,6 +333,46 @@ var Game = function(scene, socket){
 
         initBalloons();
         scene.addToScene(balloons);
+        
+//        body.position.z -= 3;
+        
+        
+        /*var b = new Ayce.Geometry.Box(0.1, 0.1, 0.4);
+        b.offset.set(-b.a/2, -b.b/2, 0);
+        b = b.getO3D();
+        b.position.set(0, 10, -16);
+        scene.addToScene(b);
+        
+        aycL.onNewHand = function(data){
+            var armZ = data.handModel.armModel.getLength().z;
+            var lArmLength = new Ayce.Vector3(0, 0, armZ);
+            var uArmLength = new Ayce.Vector3(0, 0, 0.4);
+            var v = new Ayce.Quaternion();
+            var r = new Ayce.Quaternion();
+            var arm = data.handModel.armModel.arm;
+            var shoulder = body.bodyParts.ShoulderL;
+
+            arm.onUpdate = function(){
+                lArmLength.set(0, 0, armZ);
+                uArmLength.set(0, 0, 0.4);
+                
+                var armPos = arm.getGlobalPosition();
+                var armRot = arm.getGlobalRotation();
+                armRot.getConjugate(v);
+                var elbowPos = armPos.addVector3(v.rotatePoint(lArmLength));
+                
+                var shoulderPos = shoulder.getGlobalPosition().copy();
+                var oldElbowPos = shoulderPos.addVector3(uArmLength);
+                
+                var axis = oldElbowPos.crossProduct(elbowPos);
+                var angle = Math.acos(oldElbowPos.copy().normalize().dotProduct(elbowPos.copy().normalize()))*(180/Math.PI);
+                r.fromAxisAngle(axis, angle);
+                r.normalize();
+                
+                b.position = shoulder.getGlobalPosition();
+                b.rotation = r;
+            };
+        };*/
     };
     function initParticles(){
         var particles0 = new Ayce.OBJLoader(path + "obj/ico.obj")[0];
@@ -537,7 +588,7 @@ var Game = function(scene, socket){
                 }
             }else if(!this.startDone){
                 start.visible = false;
-                cursor.visible = false;
+                O3Ds.cursor.visible = false;
                 this.startDone = true;
                 socket.sendPlayerReady();
             }
@@ -565,6 +616,7 @@ var Game = function(scene, socket){
                 if(i>0) numbers[i-1].visible = false;
             }
             else{
+                if(!this.cdDone)setDonutAnimation(1, 0);
                 this.cdDone = true;
                 //pane.visible = true;
             }
@@ -827,7 +879,7 @@ var Game = function(scene, socket){
         socket.onCountdownStart = function(data){
             console.log("Server Countdown start.");
             rdy.visible = false;
-            setDonutAnimation(7);
+            setDonutAnimation(7, 50);
         };
         socket.onPositionUpdate = function(data){
             var p = data.position;
@@ -1028,39 +1080,39 @@ var Game = function(scene, socket){
         }
     }
     function resetGame(){
-    setDonutAnimation(4);
-    gameOverObject.win = 0;
-    gameOverObject.runAnimation = false;
-    gameOverObject.time = 0;
-    gameOverObject.startTime = 0;
-    gameOverObject.done = false;
-    gameOverObject.zFactor = 0;
-    startObject.startTime=0;
-    startObject.time=0;
-    startObject.cdStartTime=0;
-    startObject.cdTime=0;
-    startObject.cursorOnStart=false;
-    startObject.startDone=false;
-    startObject.playersReady=0;
-    startObject.cdDone=false;
-    startObject.zFactor=0;
-    start.visible = true;
-    cursor.visible = true;
-    pane.visible = false;
-    winlose.visible = false;
-    balloons.visible = false;
-    waitingForPlayer.visible = true;
-    for(var i=0;i<numbers.length;i++){
-        numbers[i].position.y = 10;
-        numbers[i].position.z = -7;
-    }
-    winlose.position.z = -7;
-    if(playerType=="player2") {
-        for (i = 0; i < numbers.length; i++) {
-            numbers[i].position.z = 7;
-            numbers[i].update();
+        setDonutAnimation(4, 0);
+        gameOverObject.win = 0;
+        gameOverObject.runAnimation = false;
+        gameOverObject.time = 0;
+        gameOverObject.startTime = 0;
+        gameOverObject.done = false;
+        gameOverObject.zFactor = 0;
+        startObject.startTime=0;
+        startObject.time=0;
+        startObject.cdStartTime=0;
+        startObject.cdTime=0;
+        startObject.cursorOnStart=false;
+        startObject.startDone=false;
+        startObject.playersReady=0;
+        startObject.cdDone=false;
+        startObject.zFactor=0;
+        start.visible = true;
+        O3Ds.cursor.visible = true;
+        pane.visible = false;
+        winlose.visible = false;
+        balloons.visible = false;
+        waitingForPlayer.visible = true;
+        for(var i=0;i<numbers.length;i++){
+            numbers[i].position.y = 10;
+            numbers[i].position.z = -7;
         }
-        winlose.position.z = 7;
+        winlose.position.z = -7;
+        if(playerType=="player2") {
+            for (i = 0; i < numbers.length; i++) {
+                numbers[i].position.z = 7;
+                numbers[i].update();
+            }
+            winlose.position.z = 7;
+        }
     }
-}
 };

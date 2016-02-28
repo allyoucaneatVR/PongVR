@@ -8,11 +8,10 @@ uniform mat4 uMVMatrix;
 uniform mat4 uPMatrix;
 uniform mat3 uNMatrix;
 uniform vec3 uAmbientColor;
-uniform vec3 uPointLightingLocations[10];
-uniform vec3 uPointLightingColors[10];
-uniform vec3 uSpecularColors[10];
+uniform vec3 uPointLightingLocations[2];
+uniform vec3 uPointLightingColors[2];
+uniform vec3 uSpecularColors[2];
 uniform float uShininess;
-uniform float uLightIndex;
 uniform float uTime;
 uniform float uTimeChangeEffect;
 uniform float uTimeEffectDuration;
@@ -21,6 +20,8 @@ uniform int uOldEffectNr;
 
 varying vec4 vColor;
 varying vec3 vLightWeighting;
+
+const int cLightCount = 2;
 
 vec3 getEffectColor(int effect);
 
@@ -53,33 +54,12 @@ void main(void) {
 	vec3 normal = normalize(transformedNormal);
 	vec3 eyeDirection = normalize(-position.xyz);
     
-	if(uLightIndex-1.0>-0.01){
-		vec3 lightDirection = normalize(uPointLightingLocations[0] - position.xyz);
+	for(int i = 0; i < cLightCount; i++){
+		vec3 lightDirection = normalize(uPointLightingLocations[i] - position.xyz);
 		vec3 reflectionDirection = reflect(-lightDirection, normal);
 		float specularLightWeighting = pow(max(dot(reflectionDirection, eyeDirection), 0.0), uShininess);
 		float diffuseLightWeighting = max(dot(normalize(transformedNormal), lightDirection), 0.0);
-		vLightWeighting += uPointLightingColors[0] * diffuseLightWeighting + uSpecularColors[0] * specularLightWeighting;
-	}
-	if(uLightIndex-2.0>-0.01){
-		vec3 lightDirection = normalize(uPointLightingLocations[1] - position.xyz);
-		vec3 reflectionDirection = reflect(-lightDirection, normal);
-		float specularLightWeighting = pow(max(dot(reflectionDirection, eyeDirection), 0.0), uShininess);
-		float diffuseLightWeighting = max(dot(normalize(transformedNormal), lightDirection), 0.0);
-		vLightWeighting += uPointLightingColors[1] * diffuseLightWeighting + uSpecularColors[1] * specularLightWeighting;
-	}
-	if(uLightIndex-3.0>-0.01){
-		vec3 lightDirection = normalize(uPointLightingLocations[2] - position.xyz);
-		vec3 reflectionDirection = reflect(-lightDirection, normal);
-		float specularLightWeighting = pow(max(dot(reflectionDirection, eyeDirection), 0.0), uShininess);
-		float diffuseLightWeighting = max(dot(normalize(transformedNormal), lightDirection), 0.0);
-		vLightWeighting += uPointLightingColors[2] * diffuseLightWeighting + uSpecularColors[2] * specularLightWeighting;
-	}
-	if(uLightIndex-4.0>-0.01){
-		vec3 lightDirection = normalize(uPointLightingLocations[3] - position.xyz);
-		vec3 reflectionDirection = reflect(-lightDirection, normal);
-		float specularLightWeighting = pow(max(dot(reflectionDirection, eyeDirection), 0.0), uShininess);
-		float diffuseLightWeighting = max(dot(normalize(transformedNormal), lightDirection), 0.0);
-		vLightWeighting += uPointLightingColors[3] * diffuseLightWeighting + uSpecularColors[3] * specularLightWeighting;
+		vLightWeighting += uPointLightingColors[i] * diffuseLightWeighting + uSpecularColors[i] * specularLightWeighting;
 	}
     vLightWeighting = vLightWeighting * 0.9;
 }
@@ -172,35 +152,35 @@ vec3 getEffectColor(int effect){
 		
 		color.rgb = color.rgb*0.4 + vec3(0.4);
 	}
-	else if(effect == 5){//clock Rainbow
-		float time = (uTime - floor(aTextureCoord.y)*400.0)/1000.0;///1500.0;
+	// else if(effect == 5){//clock Rainbow
+	// 	float time = (uTime - floor(aTextureCoord.y)*400.0)/1000.0;///1500.0;
 		
-		float m1 = step(0.0,  (aVertexPosition.y/5.0) * sin(time) + (aVertexPosition.x/5.0) * cos(time)) * step(0.0, sin(time*0.5));
-		float c1 = step(0.0, -aVertexPosition.x/5.0) * m1;
+	// 	float m1 = step(0.0,  (aVertexPosition.y/5.0) * sin(time) + (aVertexPosition.x/5.0) * cos(time)) * step(0.0, sin(time*0.5));
+	// 	float c1 = step(0.0, -aVertexPosition.x/5.0) * m1;
 		
-		float m2 = step(0.0,  (aVertexPosition.y/5.0) * sin(time) + (aVertexPosition.x/5.0) * cos(time)) * step(0.0, cos(time*0.5));
-		float c2 = step(0.0,  aVertexPosition.x/5.0) * m2;
+	// 	float m2 = step(0.0,  (aVertexPosition.y/5.0) * sin(time) + (aVertexPosition.x/5.0) * cos(time)) * step(0.0, cos(time*0.5));
+	// 	float c2 = step(0.0,  aVertexPosition.x/5.0) * m2;
 		
-		float m3 = step(0.0,  (aVertexPosition.y/5.0) * sin(time-3.14) + (aVertexPosition.x/5.0) * cos(time-3.14)) * step(0.0, cos((time-3.14)*0.5));
-		float c3 = step(0.0,  aVertexPosition.x/5.0) * m3;
+	// 	float m3 = step(0.0,  (aVertexPosition.y/5.0) * sin(time-3.14) + (aVertexPosition.x/5.0) * cos(time-3.14)) * step(0.0, cos((time-3.14)*0.5));
+	// 	float c3 = step(0.0,  aVertexPosition.x/5.0) * m3;
 		
-		float m4 = step(0.0,  (aVertexPosition.y/5.0) * sin(time-3.14) + (aVertexPosition.x/5.0) * cos(time-3.14)) * step(0.0, sin((time-3.14)*0.5));
-		float c4 = step(0.0, -aVertexPosition.x/5.0) * m4;
+	// 	float m4 = step(0.0,  (aVertexPosition.y/5.0) * sin(time-3.14) + (aVertexPosition.x/5.0) * cos(time-3.14)) * step(0.0, sin((time-3.14)*0.5));
+	// 	float c4 = step(0.0, -aVertexPosition.x/5.0) * m4;
 		
-		color.rgb = mix(vec3(0.5, 0.0, 0.0), vec3( sin(mod(time, (3.14 * 8.0)))), c1 + c2 + c3 + c4);
-	}
-	else if(effect == 6){//clock Rainbow
-		float time = (uTime - floor(aTextureCoord.y)*400.0)/1000.0;
+	// 	color.rgb = mix(vec3(0.5, 0.0, 0.0), vec3( sin(mod(time, (3.14 * 8.0)))), c1 + c2 + c3 + c4);
+	// }
+	// else if(effect == 6){//clock Rainbow
+	// 	float time = (uTime - floor(aTextureCoord.y)*400.0)/1000.0;
 		
-		float m1 = step(0.0,  (aVertexPosition.y/5.0) * sin(time) + (aVertexPosition.x/5.0) * cos(time)) * step(0.0, sin(time*0.5));
-		float c1 = step(0.0, -aVertexPosition.x/5.0) * m1;
+	// 	float m1 = step(0.0,  (aVertexPosition.y/5.0) * sin(time) + (aVertexPosition.x/5.0) * cos(time)) * step(0.0, sin(time*0.5));
+	// 	float c1 = step(0.0, -aVertexPosition.x/5.0) * m1;
 		
-		float m2 = step(0.0,  (aVertexPosition.y/5.0) * sin(time) + (aVertexPosition.x/5.0) * cos(time)) * step(0.0, cos(time*0.5));
-		float c2 = step(0.0,  aVertexPosition.x/5.0) * m2;
+	// 	float m2 = step(0.0,  (aVertexPosition.y/5.0) * sin(time) + (aVertexPosition.x/5.0) * cos(time)) * step(0.0, cos(time*0.5));
+	// 	float c2 = step(0.0,  aVertexPosition.x/5.0) * m2;
 		
-		color.r = c1;
-		color.g = c2;
-	}
+	// 	color.r = c1;
+	// 	color.g = c2;
+	// }
 	else if(effect == 7){//countdown
 		float random = fract(aTextureCoord.y);
 		float nr = floor(aTextureCoord.y);
@@ -221,7 +201,7 @@ vec3 getEffectColor(int effect){
 		c2 = (aVertexPosition.y/5.0) * sin(-time - offset*2.0) + (aVertexPosition.x/5.0) * cos(-time - offset*2.0);
 		color.b = c1 * c2;
 		
-		float countdown = step(1.0, abs(nr-dCount/2.0)/(max(0.0, 5.0)));// - 5.0*((uTime-uTimeChangeEffect)/5000.0)
+		float countdown = step(1.0, abs(nr-dCount/2.0+0.5)/(max(0.0, 5.0 - 5.0*((uTime-uTimeChangeEffect)/5000.0))));
 		color.rgb = (0.4 - color.rgb*2.0)*countdown + (0.4 - color.rgb*2.0)*0.2*(1.0-countdown);
 	}
 	

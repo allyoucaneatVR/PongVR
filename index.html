@@ -5,10 +5,12 @@
     <meta http-equiv="content-type" content="text/html, charset=ISO-8859-1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
 
-    <link rel="stylesheet" href="menu/font-awesome-4.4.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="menu/main.css">
+    <link rel="stylesheet" href="assets/menu/fonts/font-awesome-4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/menu/css/main.css">
 
     <script type="text/javascript" src="lib/AyceVR.min.js"></script>
+    <script type="text/javascript" src="lib/leap-0.6.4.min.js"></script>
+    <script type="text/javascript" src="lib/AycL.js"></script>
     <script type="text/javascript" src="lib/stats.min.js"></script>
     
     <script type="text/javascript" src="src/PongVR.js"></script>
@@ -16,8 +18,8 @@
     <script type="text/javascript" src="src/Socket.js"></script>
     <script type="text/javascript" src="src/TextureCube.js"></script>
     <script type="text/javascript" src="src/PlayerModel.js"></script>
-    <script type="text/javascript" src="menu/PongVR-menu.js"></script>
-    <script type="text/javascript" src="menu/qrcode.min.js"></script>
+    <script type="text/javascript" src="assets/menu/js/PongVR-menu.js"></script>
+    <script type="text/javascript" src="assets/menu/js/qrcode.min.js"></script>
     
 <!--    <script src="http://127.0.0.1:8080/socket.io/socket.io.js"></script>-->
     <script src="https://januskopf.com:8080/socket.io/socket.io.js"></script>
@@ -29,9 +31,8 @@
 
 <body>
 <!--    Title Menu-->
-    <div id="pongvr-background"></div>
-        
     <div id="titlescreen">
+        <div id="pongvr-background"></div>
         <div id="pong-vr-title">PongVR</div>
         
         <div id="menu-container">
@@ -108,9 +109,18 @@
                     <div id="back-vr">
                         <b><i class="fa fa-angle-double-left"></i> back</b>
                     </div>
+                </div><!--
+                --><div class="ani" id="info_loading">
+                    <div id="loading-container">
+                        <i class="fa fa-spinner fa-pulse"></i>
+                        <br>
+                        <br>
+                        <div>Loading...</div>
+                    </div>
                 </div>
             </div>
             <div class="ani" id="menu-frame">
+                
                 <div class="ani menu-chapter" id="start-selection">
                     <div class="startMenu" id="start">
                         <div class="menu-option" style="font-size: 3em">
@@ -167,7 +177,7 @@
                     <!--Cardboard-->
                     <div class="startMenu" id="cardboard" onclick="optionAnimation(this)">
                         <div class="menu-option" style="cursor: pointer;">
-                            <img src="menu/cardboard.svg" style="height: 10em;"/>
+                            <img src="assets/menu/img/cardboard.svg" style="height: 10em;"/>
                             <br>
                             Cardboard
                         </div>
@@ -256,7 +266,8 @@
                             </script>
                         </div>
                     </div>
-                </div>
+                </div><!--
+                --><div class="ani menu-chapter" id="loading-selection"></div>
             </div>
         </div>
         
@@ -307,16 +318,6 @@
                     <b onclick="showMainMenu()"><i class="fa fa-angle-double-left"></i> back</b>
                 </div>
             </div>
-        </div>
-    </div>
-    
-<!--    Loading Screen-->
-    <div id="loading-screen">
-        <div class="startMenu" id="loading-container">
-            <i class="fa fa-spinner fa-pulse"></i>
-            <br>
-            <br>
-            <div>Loading...</div>
         </div>
     </div>
     

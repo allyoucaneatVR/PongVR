@@ -1,8 +1,9 @@
 precision mediump float;
 
 varying vec2 vTextureCoord;
+//varying vec3 vPosition;
 
-uniform sampler2D uSampler[2];
+uniform sampler2D uSampler;
 uniform float uTime[3];
 uniform vec3 uCenter[3];
 uniform vec3 uZIndicators;
@@ -18,8 +19,10 @@ const float thickness0 = 0.004*40.0;
 const float thickness1 = 0.3*40.0;
 
 void main(void) {
-	vec4 fragmentColor = vec4(1.0, 1.0, 1.0,texture2D(uSampler[0], vec2(vTextureCoord.s, vTextureCoord.t)).a);
-
+	vec4 fragmentColor = vec4(1.0, 1.0, 1.0, 0.0);
+	fragmentColor.a = texture2D(uSampler, vec2(vTextureCoord.s/2.0, vTextureCoord.t/2.0)).a;// + smoothstep(-2.3, -2.49, vPosition.y)/5.0;
+	//fragmentColor.a = fragmentColor.a * ((sin(vPosition.z)+1.0)/2.0);
+	
 	for(int i=0;i<3;i++){
 		if(uTime[i]<duration){
 			float factor = (uTime[i]*speed);
@@ -37,11 +40,14 @@ void main(void) {
                     float smooth = (1.0 - uTime[i]/duration) * (0.5+(dist-factor));
                     fragmentColor += vec4(-0.075, -0.05, 0.0, smooth);
                 }
-			}else if(uCenter[i].y==0.0){	//bottom wall
+			}
+			else if(uCenter[i].y==0.0){	//bottom wall
 				centerTexCoord = vec2( texSize.y+texSize.x*uCenter[i].x, uCenter[i].z*texSize.z+textureOffsetZ );
-			}else if(uCenter[i].x==1.0){	//right wall
+			}
+			else if(uCenter[i].x==1.0){	//right wall
 				centerTexCoord = vec2( texSize.y+texSize.x+texSize.y*uCenter[i].y, uCenter[i].z*texSize.z+textureOffsetZ );
-			}else if(uCenter[i].y==1.0){	//top wall
+			}
+			else if(uCenter[i].y==1.0){	//top wall
 				centerTexCoord = vec2( texSize.y+texSize.x+texSize.y+texSize.x*(1.0-uCenter[i].x), uCenter[i].z*texSize.z+textureOffsetZ );
 				
                 centerTexCoordOF = vec2( centerTexCoord.x-44.0, uCenter[i].z*texSize.z+textureOffsetZ );

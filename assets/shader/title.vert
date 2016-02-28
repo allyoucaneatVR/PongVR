@@ -7,7 +7,6 @@ uniform mat3 uNMatrix;
 uniform vec3 uAmbientColor;
 uniform vec3 uPointLightingLocations[1];
 uniform vec3 uPointLightingColors[1];
-uniform float uLightIndex;
 uniform float uTime;
 uniform int uIndex;
 
@@ -51,10 +50,8 @@ void main(void) {
 	vec3 normal = normalize(transformedNormal);
 	vec3 eyeDirection = normalize(-position.xyz);
 	
-	if(uLightIndex-1.0>-0.01){
-		vec3 lightDirection = normalize(uPointLightingLocations[0] - position.xyz);
-		vec3 reflectionDirection = reflect(-lightDirection, normal);
-		float diffuseLightWeighting = max(dot(normalize(transformedNormal), lightDirection), 0.0);
-		vLightWeighting += uPointLightingColors[0] * diffuseLightWeighting;
-	}
+	vec3 lightDirection = normalize(uPointLightingLocations[0] - position.xyz);
+	vec3 reflectionDirection = reflect(-lightDirection, normal);
+	float diffuseLightWeighting = max(dot(normalize(transformedNormal), lightDirection), 0.0);
+	vLightWeighting += uPointLightingColors[0] * diffuseLightWeighting;
 }

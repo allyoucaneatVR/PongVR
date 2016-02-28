@@ -9,20 +9,12 @@
 //                 |___|               //
 /////////////////////////////////////////
 
-window.addEventListener("load", function(){
-    load();
-//    window.setTimeout(function(){
-//        startObject.playersReady = 2;
-//        setDonutAnimation(7, 1);
-//    }, 2000);
-});
 window.addEventListener("load", createSocket);
-
 
 ////////////////////////////////////////////////////////////////////
 // Initialise ayce
 var stats = new Stats();
-var canvas, scene, mobileVR, game;
+var canvas, scene, mobileVR, game, aycL;
 var playerPosition = new Ayce.CameraModifier();
 var joinID = window.location.search.substring(1) !== "" ? joinID = window.location.search.substring(1) : null;
 var socket = null;
@@ -36,22 +28,6 @@ function createSocket(){
     };
     socket.openSocket();
     socket.socketBasicCom();
-}
-function load(webVR, cardboard, distortion){
-    showLoadingScreen();
-    window.setTimeout(function(){
-        initAyce(cardboard, distortion);
-
-        hideLoadingScreen();
-
-        stats.setMode(0);
-        stats.domElement.style.position = 'absolute';
-        stats.domElement.style.zIndex = '1000';
-        stats.domElement.style.right = '0px';
-        stats.domElement.style.top = '0px';
-        document.body.appendChild(stats.domElement);
-        if(scene)scene.resize();
-    }, 50);
 }
 function initAyce(cardboard, distortion) {
     canvas = document.getElementById("canvas");
@@ -72,6 +48,7 @@ function initAyce(cardboard, distortion) {
         scene.setFullscreenElement(fullInfo);
     }
     
+    aycL = new Ayce.allyoucanLeap.initLeapMotion(scene, new Ayce.allyoucanLeap.HandModels.Default());
     game = new Game(scene, socket);
     game.initScene();
     game.createO3Ds();
