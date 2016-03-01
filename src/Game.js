@@ -117,6 +117,12 @@ var Game = function(scene, socket){
         //ball.logFragmentShader = true;
         ball.transparent = true;
         //ball.normals = null;
+        ball.collideWith = [forceField, pane];
+        ball.onCollision = function(collisionData){
+            var normal = collisionData.collisionVector.normal.copy();
+            normal.scaleBy(-2*normal.dotProduct(ball.velocity));
+            ball.velocity = ball.velocity.addVector3(normal);
+        };
 
         for(i=0;i<ball.colors.length;i+=4){
             ball.colors[i]=0;
@@ -337,42 +343,21 @@ var Game = function(scene, socket){
 //        body.position.z -= 3;
         
         
-        /*var b = new Ayce.Geometry.Box(0.1, 0.1, 0.4);
-        b.offset.set(-b.a/2, -b.b/2, 0);
-        b = b.getO3D();
-        b.position.set(0, 10, -16);
-        scene.addToScene(b);
+        var leftUpArm = new Ayce.Geometry.Box(0.07, 0.07, 0.4);
+        leftUpArm.offset.set(-leftUpArm.a/2, -leftUpArm.b/2, 0);
+        leftUpArm = leftUpArm.getO3D();
+        scene.addToScene(leftUpArm);
         
+        var rightUpArm = new Ayce.Geometry.Box(0.07, 0.07, 0.4);
+        rightUpArm.offset.set(-rightUpArm.a/2, -rightUpArm.b/2, 0);
+        rightUpArm = rightUpArm.getO3D();
+        scene.addToScene(rightUpArm);
+        
+        var isUsed = false;
         aycL.onNewHand = function(data){
-            var armZ = data.handModel.armModel.getLength().z;
-            var lArmLength = new Ayce.Vector3(0, 0, armZ);
-            var uArmLength = new Ayce.Vector3(0, 0, 0.4);
-            var v = new Ayce.Quaternion();
-            var r = new Ayce.Quaternion();
-            var arm = data.handModel.armModel.arm;
-            var shoulder = body.bodyParts.ShoulderL;
-
-            arm.onUpdate = function(){
-                lArmLength.set(0, 0, armZ);
-                uArmLength.set(0, 0, 0.4);
-                
-                var armPos = arm.getGlobalPosition();
-                var armRot = arm.getGlobalRotation();
-                armRot.getConjugate(v);
-                var elbowPos = armPos.addVector3(v.rotatePoint(lArmLength));
-                
-                var shoulderPos = shoulder.getGlobalPosition().copy();
-                var oldElbowPos = shoulderPos.addVector3(uArmLength);
-                
-                var axis = oldElbowPos.crossProduct(elbowPos);
-                var angle = Math.acos(oldElbowPos.copy().normalize().dotProduct(elbowPos.copy().normalize()))*(180/Math.PI);
-                r.fromAxisAngle(axis, angle);
-                r.normalize();
-                
-                b.position = shoulder.getGlobalPosition();
-                b.rotation = r;
-            };
-        };*/
+            data.handModel.armModel.arm.onUpdate = getLeapArmFunction(data, leftUpArm, rightUpArm);
+        };
+        
     };
     function initParticles(){
         var particles0 = new Ayce.OBJLoader(path + "obj/ico.obj")[0];
@@ -512,6 +497,32 @@ var Game = function(scene, socket){
         balloons.initParticleArrays();
         balloons.useFragmentLighting = false;
         balloons.visible = false;
+    }
+    function getLeapArmFunction(data, leftArm, rightArm){
+        var arm = data.handModel.armModel.arm;
+        var armZ = data.handModel.armModel.getLength().z;
+
+        var lArmLength = new Ayce.Vector3(0, 0, armZ);
+        
+        var v = new Ayce.Quaternion();
+        var r = new Ayce.Quaternion();
+        
+        return function(){
+            var isLeft = data.handData.isLeft();
+            var shoulder = isLeft ? body.bodyParts.ShoulderL : body.bodyParts.ShoulderR;
+            var upperArm = isLeft ? leftArm : rightArm;
+            lArmLength.set(0, 0, armZ);
+
+            var armPos = arm.getGlobalPosition();
+            var armRot = arm.getGlobalRotation();
+            armRot.getConjugate(v);
+            var elbowPos = armPos.addVector3(v.rotatePoint(lArmLength));
+
+            var shoulderPos = shoulder.getGlobalPosition();
+
+            upperArm.position = elbowPos;
+            upperArm.rotation.lookAt(elbowPos, shoulderPos);
+        };
     }
     function negateObjectDirection(){
         for(var i=0;i<numbers.length;i++){
@@ -1114,5 +1125,28 @@ var Game = function(scene, socket){
             }
             winlose.position.z = 7;
         }
+    }
+};
+
+var forward = new Ayce.Vector3(0, 0, 1);
+Ayce.Quaternion.prototype.lookAt = function(source, destination){
+    //TODO Object Pool
+    var forwardVector = destination.copy().subtract(source.x, source.y, source.z);
+    forwardVector.normalize();
+    var dot = forward.dotProduct(forwardVector);
+
+    if(Math.abs(dot + 1) < 0.000001){
+        this.set(0, 1, 0, Math.PI);
+    }
+    else if(Math.abs(dot - 1) < 0.000001){
+        this.set(0, 0, 0, 1);
+    }
+    else{                
+        var angle = Math.acos(dot);
+        var axis  = forwardVector.crossProduct(forward);
+        axis.normalize();
+
+        this.fromAxisAngle(axis, angle);
+        this.normalize();
     }
 };
