@@ -152,7 +152,7 @@ window.addEventListener("load", function(){
         linkBox.style.display = "none";
         showVR();
     }
-    load();
+//    load();
 });
 
 //helpers

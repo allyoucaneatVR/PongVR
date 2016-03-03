@@ -48,7 +48,7 @@ function initAyce(cardboard, distortion) {
         scene.setFullscreenElement(fullInfo);
     }
     
-    aycL = new Ayce.allyoucanLeap.initLeapMotion(scene, new Ayce.allyoucanLeap.HandModels.Default());
+//    aycL = new Ayce.allyoucanLeap.initLeapMotion(scene, new Ayce.allyoucanLeap.HandModels.Default());
     game = new Game(scene, socket);
     game.initScene();
     game.createO3Ds();
