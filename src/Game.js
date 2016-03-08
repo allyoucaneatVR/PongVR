@@ -343,20 +343,20 @@ var Game = function(scene, socket){
 //        body.position.z -= 3;
         
         
-        var leftUpArm = new Ayce.Geometry.Box(0.07, 0.07, 0.4);
-        leftUpArm.offset.set(-leftUpArm.a/2, -leftUpArm.b/2, 0);
-        leftUpArm = leftUpArm.getO3D();
-        scene.addToScene(leftUpArm);
-        
-        var rightUpArm = new Ayce.Geometry.Box(0.07, 0.07, 0.4);
-        rightUpArm.offset.set(-rightUpArm.a/2, -rightUpArm.b/2, 0);
-        rightUpArm = rightUpArm.getO3D();
-        scene.addToScene(rightUpArm);
-        
-        var isUsed = false;
-        aycL.onNewHand = function(data){
-            data.handModel.armModel.arm.onUpdate = getLeapArmFunction(data, leftUpArm, rightUpArm);
-        };
+//        var leftUpArm = new Ayce.Geometry.Box(0.07, 0.07, 0.4);
+//        leftUpArm.offset.set(-leftUpArm.a/2, -leftUpArm.b/2, 0);
+//        leftUpArm = leftUpArm.getO3D();
+//        scene.addToScene(leftUpArm);
+//        
+//        var rightUpArm = new Ayce.Geometry.Box(0.07, 0.07, 0.4);
+//        rightUpArm.offset.set(-rightUpArm.a/2, -rightUpArm.b/2, 0);
+//        rightUpArm = rightUpArm.getO3D();
+//        scene.addToScene(rightUpArm);
+//        
+//        var isUsed = false;
+//        aycL.onNewHand = function(data){
+//            data.handModel.armModel.arm.onUpdate = getLeapArmFunction(data, leftUpArm, rightUpArm);
+//        };
         
     };
     function initParticles(){
