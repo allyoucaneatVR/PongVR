@@ -135,6 +135,10 @@ i{
 #browser-warning{
     display: none;
 }
+#server-status{
+    font-weight:bold;
+    /*display: none;*/
+}
 .menu-option{
     margin-bottom: 1em;
     -webkit-transition: 0.5s ease-in-out;

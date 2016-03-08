@@ -30,7 +30,8 @@ var PongVRSocket = function(io){
 
     this.openSocket = function(){
         if(io === undefined || !io){
-            alert("Can't connect to server. Please try again later.");
+            //alert("Can't connect to server. Please try again later.");
+            document.getElementById("server-status").innerHTML = "Unfortunately the PongVR server is not available at this point. Please try again later."
             return;
         }
         socket = io.connect(ip);
@@ -40,12 +41,17 @@ var PongVRSocket = function(io){
         if(io === undefined || !io)return;
         socket.on('connect',        function () {
             console.log("Connected to Websocket");
+            //document.getElementById("server-status").style.display = "none";  // TODO: use display:none instead
         });
         socket.on('reconnect',      function () {
             console.log("Reconnected to Websocket");
+            //document.getElementById("server-status").style.display = "none";
+            document.getElementById("server-status").innerHTML = ""
         });
         socket.on('reconnecting',   function () {
             console.log("reconnecting...");
+            //document.getElementById("server-status").style.display = "inline";
+            document.getElementById("server-status").innerHTML = "Unfortunately the PongVR server is not available at this point. Please try again later."
         });
         socket.on('disconnect',     function (data) {
             console.log("Disconnect: ", data);
@@ -106,4 +112,4 @@ var PongVRSocket = function(io){
         
         socket.emit('player_ready', {ready: true});
     };
-}
+};
