@@ -9,10 +9,8 @@
     <link rel="stylesheet" href="assets/menu/css/main.css">
 
     <script type="text/javascript" src="lib/AyceVR.min.js"></script>
-<!--
     <script type="text/javascript" src="lib/leap-0.6.4.min.js"></script>
     <script type="text/javascript" src="lib/AycL.js"></script>
--->
     <script type="text/javascript" src="lib/stats.min.js"></script>
     
     <script type="text/javascript" src="src/PongVR.js"></script>
@@ -326,8 +324,15 @@
     
 <!--    Fullscreen Info-->
     <div id="fullscreen-info">
-        <div class="startMenu">
+        <div class="startMenu" id="enter-fullscreen-info" style="display: none;">
             <div>click to enter fullscreen</div>
+        </div>
+        <br>
+        <div class="startMenu" id="enter-hmd-info" style="display: none;">
+            <div>Show in HMD</div>
+        </div>
+        <div class="startMenu" id="exit-hmd-info" style="display: none;">
+            <div>Exit HMD</div>
         </div>
     </div>
     

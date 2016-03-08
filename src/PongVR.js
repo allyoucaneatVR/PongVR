@@ -45,10 +45,29 @@ function initAyce(cardboard, distortion) {
     if(webVRSuccess || mobileVR){
         var fullInfo = document.querySelector("#fullscreen-info");
         fullInfo.style.display = "block";
-        scene.setFullscreenElement(fullInfo);
+        
+        if(mobileVR){
+            var enterFullscreen = document.querySelector("#enter-fullscreen-info");
+            enterFullscreen.style.display = "";
+            scene.setFullscreenElement(enterFullscreen);
+        }
+        else if(webVRSuccess){
+            var enterHMD = document.querySelector("#enter-hmd-info");
+            var exitHMD = document.querySelector("#exit-hmd-info");
+            enterHMD.style.display = "";
+//            exitHMD.style.display = "";
+            if(navigator.getVRDisplays){
+                enterHMD.addEventListener("click", function(){
+                    enterHMD.style.display = "none";
+                });
+            }
+            
+            scene.setHMDEnterElement(enterHMD);
+            scene.setHMDExitElement (exitHMD);
+        }
     }
     
-//    aycL = new Ayce.allyoucanLeap.initLeapMotion(scene, new Ayce.allyoucanLeap.HandModels.Default());
+    aycL = new Ayce.allyoucanLeap.initLeapMotion(scene, new Ayce.allyoucanLeap.HandModels.Default());
     game = new Game(scene, socket);
     game.initScene();
     game.createO3Ds();
