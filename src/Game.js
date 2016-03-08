@@ -162,7 +162,7 @@ var Game = function(scene, socket){
         forceField.shader = path + "shader/forceField";
         forceField.shaderUniforms = [];
         forceField.shaderUniforms.push(
-            ["uTime", "uniform1f", timeObject, ["time"]],
+//            ["uTime", "uniform1f", timeObject, ["time"]],
             ["uTimeStart", "uniform1fv", forceFieldObject, ["time"]],
             ["uCenter", "uniform3fv", forceFieldObject, ["center"]],
             ["uZIndicators", "uniform3f", forceFieldObject.ballZ, ["x", "y", "z"]]
