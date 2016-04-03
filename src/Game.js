@@ -1055,7 +1055,7 @@ var Game = function(scene, socket){
         lastChange = timeObject.time;
     }
     function setDonutAnimation(effectNr, changeDuration){
-        changeDuration = changeDuration || 1000;
+        changeDuration = isNaN(changeDuration) ? 1000 : changeDuration;
 
         donutUniforms.timeChange = timeObject.time;
         donutUniforms.oldNr = donutUniforms.nr;
