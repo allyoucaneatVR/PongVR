@@ -88,7 +88,7 @@ i{
     margin: 0;
     white-space: nowrap;
     overflow: hidden;
-    border-radius: 1em;
+    background-color: white
 }
 #info p{
     margin: 0;
@@ -99,7 +99,6 @@ i{
     vertical-align: top;
     width: 100%;
     white-space: normal;
-    
 }
 
 #webvr-container{
@@ -202,7 +201,7 @@ i{
     height: auto;
     width: auto;
     padding: 1em;
-    
+
     position: relative;
     top: 50%;
     transform: translateY(-50%);

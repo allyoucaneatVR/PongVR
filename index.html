@@ -12,7 +12,7 @@
     <script type="text/javascript" src="lib/leap-0.6.4.min.js"></script>
     <script type="text/javascript" src="lib/AycL.js"></script>
     <script type="text/javascript" src="lib/stats.min.js"></script>
-    
+
     <script type="text/javascript" src="src/PongVR.js"></script>
     <script type="text/javascript" src="src/Game.js"></script>
     <script type="text/javascript" src="src/Socket.js"></script>
@@ -20,7 +20,7 @@
     <script type="text/javascript" src="src/PlayerModel.js"></script>
     <script type="text/javascript" src="assets/menu/js/PongVR-menu.js"></script>
     <script type="text/javascript" src="assets/menu/js/qrcode.min.js"></script>
-    
+
 <!--    <script src="http://127.0.0.1:8080/socket.io/socket.io.js"></script>-->
     <script src="https://januskopf.com:8080/socket.io/socket.io.js"></script>
     <script>
@@ -34,12 +34,12 @@
     <div id="titlescreen">
         <div id="pongvr-background"></div>
         <div id="pong-vr-title">PongVR</div>
-        
+
         <div id="menu-container">
             <div class="startMenu box ani" id="info">
                 <div class="ani" id="info_rules">
-                    <p> 
-                        PongVR is a new spin on the classic from 1972. 
+                    <p>
+                        PongVR is a new spin on the classic from 1972.
                     </p>
                     <br>
                     <p>
@@ -47,8 +47,8 @@
                     </p>
                     <p>
                         Once you've chosen a game to join and you're ready to play, simply aim at the start sign in front
-                        of you until it turns completely white. After your opponent does the same, the game starts. 
-                        To pass the ball back to the other player simply hit it with the square &ldquo;racket&rdquo; in front of you. 
+                        of you until it turns completely white. After your opponent does the same, the game starts.
+                        To pass the ball back to the other player simply hit it with the square &ldquo;racket&rdquo; in front of you.
                         You can control the &ldquo;racket&rsquo;s&rdquo; position using your head rotation.
                         The first player to reach 5 Points wins.
                     </p>
@@ -59,7 +59,7 @@
                     </p>
                     <br>
                     <p>
-                        PongVR is a game created with the 
+                        PongVR is a game created with the
                         <a href="https://allyoucaneatvr.github.io" target="_blank">allyoucaneatVR</a> Engine.
                     </p>
                     <p id="browser-warning">
@@ -122,7 +122,7 @@
                 </div>
             </div>
             <div class="ani" id="menu-frame">
-                
+
                 <div class="ani menu-chapter" id="start-selection">
                     <div class="startMenu" id="start">
                         <div class="menu-option" style="font-size: 3em">
@@ -238,7 +238,7 @@
                             <div id="no-webvr">
                                 <div>
                                     <p>
-                                        Your browser dosen't support WebVR. 
+                                        Your browser dosen't support WebVR.
                                         <br>
                                         Please install a WebVR compatible browser to use this mode.
                                     </p>
@@ -272,23 +272,23 @@
                 --><div class="ani menu-chapter" id="loading-selection"></div>
             </div>
         </div>
-        
+
         <div id="webvr-container">
             <div class="startMenu box" id="webvr-text">
                 <b>WebVR Setup Instructions</b>
                 <p>
                     To play PongVR in a VR headset like the Oculus Rift you need a web browser that supports WebVR.
-                    If you're using a Google Cardboard your regular browser will suffice. WebVR is a new technology which 
+                    If you're using a Google Cardboard your regular browser will suffice. WebVR is a new technology which
                     enables you to use different headsets to display VR content directly in your browser.
                 </p>
                 <p>
-                    Currently WebVR is only supported by experimental versions of Mozilla Firefox and Google Chrome. 
-                    Please be aware that WebVR is still in development. For the best VR experience we recommend the WebVR 
+                    Currently WebVR is only supported by experimental versions of Mozilla Firefox and Google Chrome.
+                    Please be aware that WebVR is still in development. For the best VR experience we recommend the WebVR
                     version of Chrome. For WebVR to work the WebVR flag needs to be enabled. Simply go to
                     <b>chrome://flags/#enable-webvr</b> and hit <i>activate</i>.
                 </p>
                 <div>
-                    <div style="display: inline-block; 
+                    <div style="display: inline-block;
                                 vertical-align: top;
                                 padding: 1em;">
                         <a href="https://drive.google.com/folderview?id=0BzudLt22BqGRbW9WTHMtOWMzNjQ&usp=sharing#list" target="_blank"
@@ -301,7 +301,7 @@
                         </a>
                     </div>
                      <div style="display: inline-block; width: 2em;"></div>
-                    <div style="display: inline-block; 
+                    <div style="display: inline-block;
                                 vertical-align: top;
                                 padding: 1em;">
                         <a href="http://mozvr.com" target="_blank"
@@ -314,7 +314,7 @@
                     </div>
                 </div>
                 <p>
-                    You can find more information about WebVR on 
+                    You can find more information about WebVR on
                     <a href="http://webvr.info" target="_blank">webvr.info</a>.
                 </p>
                 <div>
@@ -323,7 +323,7 @@
             </div>
         </div>
     </div>
-    
+
 <!--    Fullscreen Info-->
     <div id="fullscreen-info">
         <div class="startMenu" id="enter-fullscreen-info" style="display: none;">
@@ -337,7 +337,7 @@
             <div>Exit HMD</div>
         </div>
     </div>
-    
+
 <!--    ayce settings-->
     <div id="ayce-settings" style="display: none;">
         <a id="showMenu" onclick="showMenu()"><i class="fa fa-cog fa-2x"></i></a>
@@ -358,12 +358,12 @@
             </div>
         </div>
     </div>
-    
+
 <!--    Cancas-->
     <div id="main-canvas">
         <canvas id="canvas" style="border: none; margin: 0;"></canvas>
     </div>
-    
+
 <!--    piwik-->
     <script type="text/javascript">
       var _paq = _paq || [];

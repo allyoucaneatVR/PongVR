@@ -1,9 +1,9 @@
 /*jslint browser: true*/
 
 /* Main Menu Function */
-var showStart, 
-    showOpponent, 
-    showVR, 
+var showStart,
+    showOpponent,
+    showVR,
     showLoading;
 
 window.addEventListener("load", function(){
@@ -14,27 +14,27 @@ window.addEventListener("load", function(){
     var isEdge = !isIE && !!window.StyleMedia;
     var isChrome = !!window.chrome && !!window.chrome.webstore;
     var isBlink = (isChrome || isOpera) && !!window.CSS;
-    
+
     if(isSafari || isIE)document.querySelector("#browser-warning").style.display = "block";
-    
+
     var selectionContainer = document.querySelector("#menu-frame");
     var startSe = document.querySelector("#start-selection");
     var playerSe = document.querySelector("#player-selection");
     var vrSe = document.querySelector("#vr-selection");
     var loadingSe = document.querySelector("#loading-selection");
-    
+
     var multiInfo = document.querySelector('#multi-info');
-    var backOpp = document.querySelector("#back-opp"); 
-    var backVR = document.querySelector("#back-vr"); 
-    
+    var backOpp = document.querySelector("#back-opp");
+    var backVR = document.querySelector("#back-vr");
+
     var info = document.querySelector("#info");
     var infoStatus = document.querySelector("#info-status");
     var rules = document.querySelector("#info_rules");
     var opponents = document.querySelector("#info_opponent");
-    var vrMode = document.querySelector("#info_vrMode");   
-    var infoLoading = document.querySelector("#info_loading");   
-    var linkBox = document.querySelector("#link-box");   
-    var qrBox = document.querySelector("#qr-box");   
+    var vrMode = document.querySelector("#info_vrMode");
+    var infoLoading = document.querySelector("#info_loading");
+    var linkBox = document.querySelector("#link-box");
+    var qrBox = document.querySelector("#qr-box");
     var copyBox = document.querySelector("#copy-box");
     var qrcode = new QRCode(linkBox.querySelector("#qr-container"), {
         width: 200,
@@ -44,9 +44,9 @@ window.addEventListener("load", function(){
         correctLevel : QRCode.CorrectLevel.L
     });
     var isQR = false;
-    
+
     var shown = 0;
-    
+
     showStart = function(){
         shown = 1;
         showMenuChapter(selectionContainer, startSe);
@@ -68,7 +68,7 @@ window.addEventListener("load", function(){
         showMenuChapter(info, infoLoading);
         window.scrollTo(0, 0);
     };
-    
+
     window.addEventListener("resize", function(){
         window.setTimeout(function(){
             if(shown === 1){
@@ -85,9 +85,9 @@ window.addEventListener("load", function(){
             }
         }, 1000);
     });
-    
+
     showStart();
-    
+
     function playWithFriend(){
         multiInfo.value = window.location.origin + window.location.pathname + "?" + gameId;
         //multiInfo.innerHTML = window.location.origin + window.location.pathname + "?" + gameId;
@@ -103,7 +103,7 @@ window.addEventListener("load", function(){
         joinID = "random";
         showVR();
     }
-    
+
     document.querySelector("#start").addEventListener("click", function(){
         clickFlash(document.querySelector("#start"));
         showOpponent();
@@ -119,16 +119,17 @@ window.addEventListener("load", function(){
         playWithRandom();
         window.scrollTo(0, 0);
     });
-    
+
     backOpp.addEventListener("click", showStart);
     backVR.addEventListener("click", showOpponent);
     copyBox.addEventListener("click", function(){
         clickFlash(copyBox);
     });
     qrBox.addEventListener("click", function(){
+      var container;
         if(isQR){
             qrBox.innerHTML = "QR Code";
-            var container = linkBox.querySelector("#qr-container");
+            container = linkBox.querySelector("#qr-container");
             container.style.display = "none";
             multiInfo.style.display = "inline-block";
             showVR();
@@ -137,7 +138,7 @@ window.addEventListener("load", function(){
         else{
             clickFlash(qrBox);
             qrcode.makeCode(window.location + "?" + gameId);
-            var container = linkBox.querySelector("#qr-container");
+            container = linkBox.querySelector("#qr-container");
             container.style.display = "block";
             container.style.width = "200px";
             multiInfo.style.display = "none";
@@ -146,13 +147,13 @@ window.addEventListener("load", function(){
             isQR = true;
         }
     });
-    
+
     if(joinID){
         infoStatus.innerHTML = "You are joining a game.";
         linkBox.style.display = "none";
         showVR();
     }
-//    load();
+    load();
 });
 
 //helpers
@@ -160,9 +161,9 @@ function showMenuChapter(container, chapter){
     if(!container.contains(chapter))return;
     var info = document.querySelector("#info");
     info.style.height = chapter.clientHeight;
-    
+
     var w = 0;
-    
+
     for(var i=0; i<container.children.length; i++){
         if(container.children[i] === chapter)break;
         w += container.children[i].clientWidth;
@@ -209,7 +210,7 @@ function clickFlash(element){
 var up = [];
 function optionAnimation(element){
     if(up.indexOf(element) !== -1)return;
-    
+
     while(up.length > 0){
         setElement(up.pop(), 0);
     }
