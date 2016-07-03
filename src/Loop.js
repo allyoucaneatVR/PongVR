@@ -168,7 +168,7 @@ var Loop = function(scene, path){
 
     this.start = new Ayce.OBJLoader(path + "obj/start2.obj")[0];
     this.start.transparent = true;
-    this.start.position.y = 11.5;
+    this.start.position.y = 3.5;
     this.start.position.z = -7;
     this.start.scale = new Ayce.Vector3(0.7, 0.7, 0.7);
     this.start.colors = null;

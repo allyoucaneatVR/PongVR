@@ -24,7 +24,7 @@ var Game = function(scene, socket) {
 
     var tslf = 0;
 
-    var osdPosition = new Ayce.Vector3(0, 10, 15);
+    var osdPosition = new Ayce.Vector3(0, 2.5, 15);
 
     this.initScene = function() {
         //Set Camera Properties
@@ -91,7 +91,6 @@ var Game = function(scene, socket) {
             for (i = tempSphere.colors.length / 2 + 3; i < tempSphere.colors.length; i += 4) {
                 tempSphere.colors[i] = 0.4;
             }
-            //tempSphere.visible = false;
             return tempSphere;
         };
 
@@ -111,7 +110,7 @@ var Game = function(scene, socket) {
         var playfield = new Ayce.OBJLoader(path + "obj/forceFieldNew.obj");
         forceField = playfield[1];
         forceField.colors = null;
-        forceField.position.set(0, 10, 0);
+        forceField.position.set(0, 0, 0);
         forceField.imageSrc = path + "obj/textures/square1.png"; //[path + "obj/textures/square1.png", path + "obj/textures/square3.png"];
         forceField.transparent = true;
         //forceField.twoFaceTransparency = true;
