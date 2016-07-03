@@ -7,7 +7,7 @@ var Game = function(scene, socket) {
         scoreboard0, scoreboard1, torus,
         rdy, waitingForPlayer, sound, winlose,
         balloons, ball, body, pane, paneEmpty;
-    var O3Ds = {};
+    //var O3Ds = {};
     var serverO3Ds = {};
     var path = "assets/";
     var aquariumHeight = 10;
@@ -79,7 +79,7 @@ var Game = function(scene, socket) {
         //ball.logFragmentShader = true;
         ball.transparent = true;
         //ball.normals = null;
-        ball.collideWith = [forceField, pane];
+        ball.collideWith = [forceField, loop.pane];
         ball.onCollision = function(collisionData) {
             var normal = collisionData.collisionVector.normal.copy();
             normal.scaleBy(-2 * normal.dotProduct(ball.velocity));
@@ -97,7 +97,7 @@ var Game = function(scene, socket) {
             ball.colors[i] = 0.4;
         }
 
-        pane = new Ayce.TextureCube(path + "textures/pane3.png");
+        /*pane = new Ayce.TextureCube(path + "textures/pane3.png");
         pane.textureCoords = [0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0,
             1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 0.0,
             0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0,
@@ -109,7 +109,7 @@ var Game = function(scene, socket) {
         pane.transparent = true;
         pane.twoFaceTransparency = true;
         pane.visible = false;
-        scene.addToScene(pane);
+        scene.addToScene(pane);*/
 
         paneEmpty = new Ayce.Object3D();
         paneEmpty.position.z = -4;
@@ -140,7 +140,7 @@ var Game = function(scene, socket) {
         scoreboard0.shaderUniforms.push(
             ["uDigits", "uniform1fv", scoreboardObject, ["digits0"]], ["uTime", "uniform1f", timeObject, ["time"]]);
         scoreboard0.colors = null;
-        scoreboard0.parent = pane;
+        scoreboard0.parent = loop.pane;
         scoreboard0.scale.x = 0.25;
         scoreboard0.scale.y = 0.25;
         scoreboard0.renderPriority = -1;
@@ -156,7 +156,7 @@ var Game = function(scene, socket) {
         scoreboard1.shaderUniforms.push(
             ["uDigits", "uniform1fv", scoreboardObject, ["digits1"]], ["uTime", "uniform1f", timeObject, ["time"]]);
         scoreboard1.colors = null;
-        scoreboard1.parent = pane;
+        scoreboard1.parent = loop.pane;
         scoreboard1.scale.x = 0.25;
         scoreboard1.scale.y = 0.25;
         scoreboard1.renderPriority = -1;
@@ -164,7 +164,7 @@ var Game = function(scene, socket) {
         scoreboard1.rotation.fromEulerAngles(0, Math.PI, 0);
         scene.addToScene(scoreboard1);
 
-        var cursor = O3Ds.cursor = new Ayce.OBJLoader(path + "obj/cursor.obj")[0];
+        var cursor = loop.O3Ds.cursor = new Ayce.OBJLoader(path + "obj/cursor.obj")[0];
         cursor.position.z = -2;
         cursor.parent = scene.getCamera();
         cursor.parent = bodyParent;
@@ -174,7 +174,7 @@ var Game = function(scene, socket) {
         cursor.scale = new Ayce.Vector3(0.05, 0.05, 1.0);
         scene.addToScene(cursor);
 
-        start = new Ayce.OBJLoader(path + "obj/start2.obj")[0];
+        /*start = new Ayce.OBJLoader(path + "obj/start2.obj")[0];
         start.transparent = true;
         start.position.y = 11.5;
         start.position.z = -7;
@@ -184,9 +184,9 @@ var Game = function(scene, socket) {
         start.shaderUniforms = [];
         start.shaderUniforms.push(["uTime", "uniform1f", timeObject, ["time"]], ["uFillTime", "uniform1f", startObject, ["time"]]);
         start.rotation.fromEulerAngles(0, Math.PI, 0);
-        scene.addToScene(start);
+        scene.addToScene(start);*/
 
-        numbers = [];
+        /*numbers = [];
         for (var i = 0; i < 5; i++) {
             numbers[i] = new Ayce.OBJLoader(path + "obj/number.obj")[0];
             numbers[i].imageSrc = path + "obj/textures/score_" + (5 - i) + "_alpha.png";
@@ -200,7 +200,7 @@ var Game = function(scene, socket) {
             numbers[i].shaderUniforms = [];
             numbers[i].shaderUniforms.push(["uFactor", "uniform1f", startObject, ["zFactor"]]);
             scene.addToScene(numbers[i]);
-        }
+        }*/
 
         rdy = new Ayce.OBJLoader(path + "obj/rdy.obj")[0];
         rdy.transparent = true;
@@ -229,7 +229,7 @@ var Game = function(scene, socket) {
         waitingForPlayer.scale.y = 3;
         scene.addToScene(waitingForPlayer);
 
-        winlose = new Ayce.OBJLoader(path + "obj/youwinyoulose.obj")[0];
+        /*winlose = new Ayce.OBJLoader(path + "obj/youwinyoulose.obj")[0];
         winlose.rotation.fromEulerAngles(0, Math.PI, 0);
         winlose.imageSrc = path + "obj/textures/youwinyoulose.png";
         winlose.shader = path + "shader/winlose";
@@ -240,10 +240,10 @@ var Game = function(scene, socket) {
         winlose.colors = null;
         winlose.shaderUniforms = [];
         winlose.shaderUniforms.push(["uWin", "uniform1f", gameOverObject, ["win"]]);
-        scene.addToScene(winlose);
+        scene.addToScene(winlose);*/
 
-        initBalloons();
-        scene.addToScene(balloons);
+        //initBalloons();
+        //scene.addToScene(balloons);
 
         //        body.position.z -= 3;
 
@@ -265,7 +265,7 @@ var Game = function(scene, socket) {
 
     };
 
-    function initBalloons() {
+    /*function initBalloons() {
         var balloon = new Ayce.OBJLoader(path + "obj/balloon.obj")[0];
 
         var colors = [
@@ -311,7 +311,7 @@ var Game = function(scene, socket) {
         balloons.initParticleArrays();
         balloons.useFragmentLighting = false;
         balloons.visible = false;
-    }
+    }*/
 
     function getLeapArmFunction(data, leftArm, rightArm) {
         var arm = data.handModel.armModel.arm;
@@ -341,21 +341,21 @@ var Game = function(scene, socket) {
     }
 
     function negateObjectDirection() {
-        for (var i = 0; i < numbers.length; i++) {
-            numbers[i].position.z = 7;
-            numbers[i].rotation.fromEulerAngles(0, 0, 0);
-            numbers[i].update();
+        for (var i = 0; i < loop.numbers.length; i++) {
+            loop.numbers[i].position.z = 7;
+            loop.numbers[i].rotation.fromEulerAngles(0, 0, 0);
+            loop.numbers[i].update();
         }
-        start.position.z = 7;
-        start.rotation.fromEulerAngles(0, 0, 0);
+        loop.start.position.z = 7;
+        loop.start.rotation.fromEulerAngles(0, 0, 0);
         rdy.position.z = -17;
         rdy.rotation.fromEulerAngles(0, 0, 0);
         waitingForPlayer.position.z = -osdPosition.z;
         waitingForPlayer.rotation.fromEulerAngles(0, Math.PI, 0);
         scoreboard0.rotation.fromEulerAngles(0, 0, 0);
         scoreboard1.rotation.fromEulerAngles(0, 0, 0);
-        winlose.position.z = 7;
-        winlose.rotation.fromEulerAngles(0, 0, 0);
+        loop.winlose.position.z = 7;
+        loop.winlose.rotation.fromEulerAngles(0, 0, 0);
         //if(pane.position.z<0.0){    //TODO: move to init (how to get player z?)
         //    scoreboard0.rotation.fromEulerAngles(0, Math.PI, 0);
         //    scoreboard1.rotation.fromEulerAngles(0, Math.PI, 0);
@@ -368,7 +368,9 @@ var Game = function(scene, socket) {
     ////////////////////////////////////////////////////////////////////
     //Main loop
 
-    var playerType = null;
+    var loop = new Loop(scene, path);
+    
+    loop.playerType = null;
     var playerBodies = [];
     var gKeyPressed = false;
     var lastChange = 0;
@@ -376,20 +378,20 @@ var Game = function(scene, socket) {
     var effectCount = 5;
     var ballRot = 0;
 
-    var loop = new Loop();
-    var startObject = new loop.startObject();
-    var gameOverObject = new loop.gameOverObject();
-    var timeObject = new loop.timeObject();
-    var forceFieldObject = new loop.forceFieldObject();
-    var scoreboardObject = new loop.scoreboardObject();
+    
+    var startObject = loop.startObject;
+    var gameOverObject = loop.gameOverObject;
+    var timeObject = loop.timeObject;
+    var forceFieldObject = loop.forceFieldObject;
+    var scoreboardObject = loop.scoreboardObject;
 
 
     this.setupGame = function(socket) {
         //Player functions
         socket.onPlayerID = function(data) {
             socketID = data.id;
-            playerType = data.type;
-            if (playerType == "player2") negateObjectDirection();
+            loop.playerType = data.type;
+            if (loop.playerType == "player2") negateObjectDirection();
         };
         socket.onPlayerJoins = function(data) {
             //TODO other player data
@@ -419,7 +421,7 @@ var Game = function(scene, socket) {
         };
         socket.onPlayerReadyUp = function(data) {
             startObject.playersReady++;
-            if (data.type != playerType) {
+            if (data.type != loop.playerType) {
                 rdy.visible = true;
                 waitingForPlayer.visible = false;
             }
@@ -427,7 +429,7 @@ var Game = function(scene, socket) {
         };
         socket.onPlayerReadyCanceled = function(data) {
             startObject.playersReady--;
-            if (data.type != playerType) {
+            if (data.type != loop.playerType) {
                 rdy.visible = false;
                 waitingForPlayer.visible = true;
             }
@@ -443,21 +445,21 @@ var Game = function(scene, socket) {
 
             if (data.score1 >= 5) {
                 console.log("player 1 win");
-                winlose.visible = true;
-                if (playerType == "player2") {
+                loop.winlose.visible = true;
+                if (loop.playerType == "player2") {
                     gameOverObject.win = 1;
                 }
                 gameOverObject.runAnimation = true;
-                setDonutAnimation(2);
+                //setDonutAnimation(2);
             }
             if (data.score2 >= 5) {
                 console.log("player 2 win");
-                winlose.visible = true;
-                if (playerType == "player1") {
+                loop.winlose.visible = true;
+                if (loop.playerType == "player1") {
                     gameOverObject.win = 1;
                 }
                 gameOverObject.runAnimation = true;
-                setDonutAnimation(2);
+                //setDonutAnimation(2);
             }
         };
         socket.onPlayerRemove = function(data) {
@@ -484,8 +486,8 @@ var Game = function(scene, socket) {
                 o3D = ball;
             } else if (data.type == "pane") {
                 if (
-                    (data.id != "paneP1" || playerType != "player1") &&
-                    (data.id != "paneP2" || playerType != "player2")
+                    (data.id != "paneP1" || loop.playerType != "player1") &&
+                    (data.id != "paneP2" || loop.playerType != "player2")
                 ) {
                     o3D = new Ayce.TextureCube(path + "textures/pane3.png");
                     o3D.textureCoords = [0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0,
@@ -497,8 +499,8 @@ var Game = function(scene, socket) {
                     ];
                     o3D.transparent = true;
                     o3D.twoFaceTransparency = true;
-                    o3D.scale = pane.scale;
-                    o3D.imageSrc = pane.imageSrc;
+                    o3D.scale = loop.pane.scale;
+                    o3D.imageSrc = loop.pane.imageSrc;
                 }
             }
 
@@ -551,7 +553,7 @@ var Game = function(scene, socket) {
         socket.onCountdownStart = function(data) {
             console.log("Server Countdown start.");
             rdy.visible = false;
-            setDonutAnimation(7, 50);
+            //setDonutAnimation(7, 50);
         };
         socket.onPositionUpdate = function(data) {
             var p = data.position;
@@ -621,8 +623,8 @@ var Game = function(scene, socket) {
         if (serverO3Ds.ball) {
             forceFieldObject.ballZ.x = (serverO3Ds.ball.position.z + 20) / 40;
         }
-        if (pane) {
-            forceFieldObject.ballZ.y = (pane.position.z + 20) / 40;
+        if (loop.pane) {
+            forceFieldObject.ballZ.y = (loop.pane.position.z + 20) / 40;
         }
 
         tslf = timeObject.time - tslf;
@@ -649,9 +651,9 @@ var Game = function(scene, socket) {
         if (scoreboardObject.slidingUp) {
             scoreboard0.position.y += (tslf / 1000);
             scoreboard1.position.y -= (tslf / 1000);
-            if (scoreboard0.position.y > pane.scale.y / 2 + 2 * scoreboard0.scale.y / 2) {
-                scoreboard0.position.y = pane.scale.y / 2 + 2 * scoreboard0.scale.y / 2;
-                scoreboard1.position.y = -pane.scale.y / 2 - 2 * scoreboard0.scale.y / 2;
+            if (scoreboard0.position.y > loop.pane.scale.y / 2 + 2 * scoreboard0.scale.y / 2) {
+                scoreboard0.position.y = loop.pane.scale.y / 2 + 2 * scoreboard0.scale.y / 2;
+                scoreboard1.position.y = -loop.pane.scale.y / 2 - 2 * scoreboard0.scale.y / 2;
                 scoreboardObject.slidingUp = false;
                 scoreboardObject.isUp = true;
             }
@@ -696,28 +698,28 @@ var Game = function(scene, socket) {
         paneEmpty.rotation = bodyParent.rotation.getConjugate();
         paneEmpty.rotation.normalize();
 
-        pane.position = paneEmpty.getGlobalPosition();
-        pane.rotation = paneEmpty.getGlobalRotation();
+        loop.pane.position = paneEmpty.getGlobalPosition();
+        loop.pane.rotation = paneEmpty.getGlobalRotation();
 
         var aqWidth = 3;
         var aqHeight = 2.5;
-        if (pane.position.x > aqWidth - (pane.scale.x / 2.0)) pane.position.x = aqWidth - (pane.scale.x / 2.0);
-        else if (pane.position.x < -aqWidth + (pane.scale.x / 2.0)) pane.position.x = -aqWidth + (pane.scale.x / 2.0);
+        if (loop.pane.position.x > aqWidth - (loop.pane.scale.x / 2.0)) loop.pane.position.x = aqWidth - (loop.pane.scale.x / 2.0);
+        else if (loop.pane.position.x < -aqWidth + (loop.pane.scale.x / 2.0)) loop.pane.position.x = -aqWidth + (loop.pane.scale.x / 2.0);
 
-        if (pane.position.y > aquariumHeight + aqHeight - (pane.scale.y / 2.0)) pane.position.y = aquariumHeight + aqHeight - (pane.scale.y / 2.0);
-        else if (pane.position.y < aquariumHeight - aqHeight + (pane.scale.y / 2.0)) pane.position.y = aquariumHeight - aqHeight + (pane.scale.y / 2.0);
+        if (loop.pane.position.y > aquariumHeight + aqHeight - (loop.pane.scale.y / 2.0)) loop.pane.position.y = aquariumHeight + aqHeight - (loop.pane.scale.y / 2.0);
+        else if (loop.pane.position.y < aquariumHeight - aqHeight + (loop.pane.scale.y / 2.0)) loop.pane.position.y = aquariumHeight - aqHeight + (loop.pane.scale.y / 2.0);
 
         if (paneEmpty.getGlobalPosition().z < 0) {
-            pane.position.z = -17;
-            pane.position.z -= scene.getCamera().getForwardVector().z < 0 ? 2.5 : -4;
+            loop.pane.position.z = -17;
+            loop.pane.position.z -= scene.getCamera().getForwardVector().z < 0 ? 2.5 : -4;
         } else {
-            pane.position.z = 17;
-            pane.position.z -= scene.getCamera().getForwardVector().z < 0 ? 4 : -2.5;
+            loop.pane.position.z = 17;
+            loop.pane.position.z -= scene.getCamera().getForwardVector().z < 0 ? 4 : -2.5;
         }
     }
 
     function resetGame() {
-        setDonutAnimation(4, 0);
+        //setDonutAnimation(4, 0);
         gameOverObject.win = 0;
         gameOverObject.runAnimation = false;
         gameOverObject.time = 0;
@@ -733,23 +735,23 @@ var Game = function(scene, socket) {
         startObject.playersReady = 0;
         startObject.cdDone = false;
         startObject.zFactor = 0;
-        start.visible = true;
-        O3Ds.cursor.visible = true;
-        pane.visible = false;
-        winlose.visible = false;
-        balloons.visible = false;
+        loop.start.visible = true;
+        loop.O3Ds.cursor.visible = true;
+        loop.pane.visible = false;
+        loop.winlose.visible = false;
+        loop.balloons.visible = false;
         waitingForPlayer.visible = true;
-        for (var i = 0; i < numbers.length; i++) {
-            numbers[i].position.y = 10;
-            numbers[i].position.z = -7;
+        for (var i = 0; i < loop.numbers.length; i++) {
+            loop.numbers[i].position.y = 10;
+            loop.numbers[i].position.z = -7;
         }
-        winlose.position.z = -7;
-        if (playerType == "player2") {
-            for (i = 0; i < numbers.length; i++) {
-                numbers[i].position.z = 7;
-                numbers[i].update();
+        loop.winlose.position.z = -7;
+        if (loop.playerType == "player2") {
+            for (i = 0; i < loop.numbers.length; i++) {
+                loop.numbers[i].position.z = 7;
+                loop.numbers[i].update();
             }
-            winlose.position.z = 7;
+            loop.winlose.position.z = 7;
         }
     }
 };
