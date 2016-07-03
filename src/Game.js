@@ -3,11 +3,10 @@ var Game = function(scene, socket) {
     // PongVR scene setup
     //TODO move to O3Ds:
     var bodyO3Ds, start,
-        icoSystem0, icoSystem1, forceField,
-        scoreboard0, scoreboard1, torus,
-        rdy, waitingForPlayer, sound, winlose,
-        balloons, ball, body, pane, paneEmpty;
-    //var O3Ds = {};
+        forceField,
+        scoreboard0, scoreboard1,
+        rdy, waitingForPlayer,
+        body, pane, paneEmpty, spheres;
     var serverO3Ds = {};
     var path = "assets/";
     var aquariumHeight = 10;
@@ -22,7 +21,6 @@ var Game = function(scene, socket) {
         }
     };
 
-    var numbers = [];
     var tslf = 0;
 
     var osdPosition = new Ayce.Vector3(0, 10, 15);
@@ -53,7 +51,7 @@ var Game = function(scene, socket) {
 
     this.createO3Ds = function() {
 
-        arenaO3Ds = new Ayce.OBJLoader(path + "obj/arena/arena.obj");
+        var arenaO3Ds = new Ayce.OBJLoader(path + "obj/arena/arena.obj");
         for (var i = 0; i < arenaO3Ds.length; i++) {
             var obj = arenaO3Ds[i];
             scene.addToScene(obj);
@@ -68,7 +66,46 @@ var Game = function(scene, socket) {
         body.parentRotationWeight.z = 0;
         scene.addToScene(body);
 
-        ball = new Ayce.OBJLoader(path + "obj/ball.obj")[0];
+        var createSphere = function(){
+            var tempSphere = new Ayce.OBJLoader(path + "obj/ball.obj")[0];
+            tempSphere.scale.x = 0.2;
+            tempSphere.scale.y = 0.2;
+            tempSphere.scale.z = 0.2;
+            tempSphere.shader = path + "shader/ball";
+            tempSphere.shaderUniforms = [];
+            tempSphere.shaderUniforms.push(["uTime", "uniform1f", timeObject, ["time"]]);
+            //tempSphere.logVertexShader = true;
+            //tempSphere.logFragmentShader = true;
+            tempSphere.transparent = true;
+            //tempSphere.normals = null;
+            tempSphere.collideWith = [forceField, loop.pane];
+            tempSphere.onCollision = function(collisionData) {
+                var normal = collisionData.collisionVector.normal.copy();
+                normal.scaleBy(-2 * normal.dotProduct(tempSphere.velocity));
+                tempSphere.velocity = tempSphere.velocity.addVector3(normal);
+            };
+            for (i = 0; i < tempSphere.colors.length; i += 4) {
+                tempSphere.colors[i] = 0;
+                tempSphere.colors[i + 1] = 0;
+                tempSphere.colors[i + 2] = 0;
+                tempSphere.colors[i + 3] = 1;
+            }
+
+            for (i = tempSphere.colors.length / 2 + 3; i < tempSphere.colors.length; i += 4) {
+                tempSphere.colors[i] = 0.4;
+            }
+            return tempSphere;
+        };
+
+        spheres = [
+            createSphere(),
+            createSphere(),
+            createSphere(),
+            createSphere(),
+            createSphere()
+        ];
+
+        /*ball = new Ayce.OBJLoader(path + "obj/ball.obj")[0];
         ball.scale.x = 0.2;
         ball.scale.y = 0.2;
         ball.scale.z = 0.2;
@@ -95,7 +132,7 @@ var Game = function(scene, socket) {
 
         for (i = ball.colors.length / 2 + 3; i < ball.colors.length; i += 4) {
             ball.colors[i] = 0.4;
-        }
+        }*/
 
         /*pane = new Ayce.TextureCube(path + "textures/pane3.png");
         pane.textureCoords = [0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0,
@@ -174,34 +211,6 @@ var Game = function(scene, socket) {
         cursor.scale = new Ayce.Vector3(0.05, 0.05, 1.0);
         scene.addToScene(cursor);
 
-        /*start = new Ayce.OBJLoader(path + "obj/start2.obj")[0];
-        start.transparent = true;
-        start.position.y = 11.5;
-        start.position.z = -7;
-        start.scale = new Ayce.Vector3(0.7, 0.7, 0.7);
-        start.colors = null;
-        start.shader = path + "shader/start";
-        start.shaderUniforms = [];
-        start.shaderUniforms.push(["uTime", "uniform1f", timeObject, ["time"]], ["uFillTime", "uniform1f", startObject, ["time"]]);
-        start.rotation.fromEulerAngles(0, Math.PI, 0);
-        scene.addToScene(start);*/
-
-        /*numbers = [];
-        for (var i = 0; i < 5; i++) {
-            numbers[i] = new Ayce.OBJLoader(path + "obj/number.obj")[0];
-            numbers[i].imageSrc = path + "obj/textures/score_" + (5 - i) + "_alpha.png";
-            numbers[i].position.y = 10;
-            numbers[i].position.z = -7;
-            numbers[i].rotation.fromEulerAngles(0, Math.PI, 0);
-            numbers[i].visible = false;
-            numbers[i].transparent = true;
-            numbers[i].colors = null;
-            numbers[i].shader = path + "shader/countDown";
-            numbers[i].shaderUniforms = [];
-            numbers[i].shaderUniforms.push(["uFactor", "uniform1f", startObject, ["zFactor"]]);
-            scene.addToScene(numbers[i]);
-        }*/
-
         rdy = new Ayce.OBJLoader(path + "obj/rdy.obj")[0];
         rdy.transparent = true;
         rdy.visible = false;
@@ -228,90 +237,7 @@ var Game = function(scene, socket) {
         waitingForPlayer.scale.x = 3;
         waitingForPlayer.scale.y = 3;
         scene.addToScene(waitingForPlayer);
-
-        /*winlose = new Ayce.OBJLoader(path + "obj/youwinyoulose.obj")[0];
-        winlose.rotation.fromEulerAngles(0, Math.PI, 0);
-        winlose.imageSrc = path + "obj/textures/youwinyoulose.png";
-        winlose.shader = path + "shader/winlose";
-        winlose.transparent = true;
-        winlose.visible = false;
-        winlose.position.y = 10;
-        winlose.position.z = -7;
-        winlose.colors = null;
-        winlose.shaderUniforms = [];
-        winlose.shaderUniforms.push(["uWin", "uniform1f", gameOverObject, ["win"]]);
-        scene.addToScene(winlose);*/
-
-        //initBalloons();
-        //scene.addToScene(balloons);
-
-        //        body.position.z -= 3;
-
-
-        //        var leftUpArm = new Ayce.Geometry.Box(0.07, 0.07, 0.4);
-        //        leftUpArm.offset.set(-leftUpArm.a/2, -leftUpArm.b/2, 0);
-        //        leftUpArm = leftUpArm.getO3D();
-        //        scene.addToScene(leftUpArm);
-        //
-        //        var rightUpArm = new Ayce.Geometry.Box(0.07, 0.07, 0.4);
-        //        rightUpArm.offset.set(-rightUpArm.a/2, -rightUpArm.b/2, 0);
-        //        rightUpArm = rightUpArm.getO3D();
-        //        scene.addToScene(rightUpArm);
-        //
-        //        var isUsed = false;
-        //        aycL.onNewHand = function(data){
-        //            data.handModel.armModel.arm.onUpdate = getLeapArmFunction(data, leftUpArm, rightUpArm);
-        //        };
-
     };
-
-    /*function initBalloons() {
-        var balloon = new Ayce.OBJLoader(path + "obj/balloon.obj")[0];
-
-        var colors = [
-            [244 / 255, 67 / 255, 54 / 255, 1], // red
-            [233 / 255, 30 / 255, 99 / 255, 1], // pink
-            [156 / 255, 39 / 255, 176 / 255, 1], // purple
-            [103 / 255, 58 / 255, 183 / 255, 1], // deep purple
-            [63 / 255, 81 / 255, 181 / 255, 1], // indigo
-            [33 / 255, 150 / 255, 243 / 255, 1], // blue
-            [3 / 255, 169 / 255, 244 / 255, 1], // light blue
-            [0 / 255, 188 / 255, 212 / 255, 1], // cyan
-            [0 / 255, 150 / 255, 136 / 255, 1], // teal
-            [76 / 255, 175 / 255, 80 / 255, 1], // green
-            [139 / 255, 195 / 255, 74 / 255, 1], // light green
-            [205 / 255, 220 / 255, 57 / 255, 1], // lime
-            [255 / 255, 235 / 255, 59 / 255, 1], // yellow
-            [255 / 255, 193 / 255, 7 / 255, 1], // amber
-            [255 / 255, 152 / 255, 0 / 255, 1], // orange
-            [255 / 255, 87 / 255, 34 / 255, 1] // deep orange
-        ];
-
-        var balloonColors = [];
-        for (i = 0; i < colors.length; i++) {
-            balloonColors[i] = [];
-            for (var j = 0; j < balloon.colors.length / 4; j++) {
-                balloonColors[i] = balloonColors[i].concat(colors[i]);
-            }
-        }
-
-        balloons = new Ayce.ParticleSystem(scene, balloon, 30, 0);
-        for (var i = 0; i < balloons.particles.length; i++) {
-            balloons.particles[i].position = new Ayce.Vector3(
-                (Math.random() * 2 - 1) * 6,
-                5 - Math.random() * 5,
-                (Math.random() * 2 - 1) * 6);
-            balloons.particles[i].gravity = 0.00000000001;
-            balloons.particles[i].gravityExponent = 2;
-            balloons.particles[i].scale = new Ayce.Vector3(0.3, 0.3, .3);
-            balloons.particles[i].lifetime = 10000 + Math.random() * 5000;
-            balloons.particles[i].rotationAngle.y = Math.random() * 0.001;
-            balloons.particles[i].colors = balloonColors[Math.round(Math.random() * balloonColors.length - 1)];
-        }
-        balloons.initParticleArrays();
-        balloons.useFragmentLighting = false;
-        balloons.visible = false;
-    }*/
 
     function getLeapArmFunction(data, leftArm, rightArm) {
         var arm = data.handModel.armModel.arm;
@@ -356,13 +282,6 @@ var Game = function(scene, socket) {
         scoreboard1.rotation.fromEulerAngles(0, 0, 0);
         loop.winlose.position.z = 7;
         loop.winlose.rotation.fromEulerAngles(0, 0, 0);
-        //if(pane.position.z<0.0){    //TODO: move to init (how to get player z?)
-        //    scoreboard0.rotation.fromEulerAngles(0, Math.PI, 0);
-        //    scoreboard1.rotation.fromEulerAngles(0, Math.PI, 0);
-        //}else{
-        //    scoreboard0.rotation.fromEulerAngles(0, 0, 0);
-        //    scoreboard1.rotation.fromEulerAngles(0, 0, 0);
-        //}
     }
 
     ////////////////////////////////////////////////////////////////////
@@ -372,10 +291,6 @@ var Game = function(scene, socket) {
     
     loop.playerType = null;
     var playerBodies = [];
-    var gKeyPressed = false;
-    var lastChange = 0;
-    var changeRate = 10000;
-    var effectCount = 5;
     var ballRot = 0;
 
     
@@ -389,7 +304,7 @@ var Game = function(scene, socket) {
     this.setupGame = function(socket) {
         //Player functions
         socket.onPlayerID = function(data) {
-            socketID = data.id;
+            var socketID = data.id;
             loop.playerType = data.type;
             if (loop.playerType == "player2") negateObjectDirection();
         };
@@ -483,7 +398,10 @@ var Game = function(scene, socket) {
             var o3D = null;
 
             if (data.type == "sphere") {
-                o3D = ball;
+                //o3D = ball;
+                console.log(data);
+                o3D = spheres[data.args.index];     // TODO: move index out of args
+
             } else if (data.type == "pane") {
                 if (
                     (data.id != "paneP1" || loop.playerType != "player1") &&
@@ -584,6 +502,7 @@ var Game = function(scene, socket) {
     }
 
     function setO3DAttributes(from, to) {
+
         if (from.position) {
             to.position.x = from.position.x;
             to.position.y = from.position.y;
@@ -619,9 +538,9 @@ var Game = function(scene, socket) {
 
         //Update TimeObject
         timeObject.time = Date.now() - timeObject.startTime;
-
-        if (serverO3Ds.ball) {
-            forceFieldObject.ballZ.x = (serverO3Ds.ball.position.z + 20) / 40;
+        
+        if (serverO3Ds.ball0) {
+            forceFieldObject.ballZ.x = (serverO3Ds.ball0.position.z + 20) / 40;
         }
         if (loop.pane) {
             forceFieldObject.ballZ.y = (loop.pane.position.z + 20) / 40;
@@ -631,7 +550,9 @@ var Game = function(scene, socket) {
 
         ballRot += tslf * 0.001;
 
-        ball.rotation.fromEulerAngles(ballRot, ballRot, ballRot);
+        for(var i = 0; i < spheres.length; i++){
+            spheres[i].rotation.fromEulerAngles(ballRot, ballRot, ballRot);
+        }
 
         runScoreAnimation();
 
