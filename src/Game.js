@@ -10,6 +10,7 @@ var Game = function(scene, socket) {
     var serverO3Ds = {};
     var path = "assets/";
     var aquariumHeight = 10;
+    var socketID;
     var bodyParent = {
         position: new Ayce.Vector3(),
         rotation: new Ayce.Quaternion(),
@@ -90,6 +91,7 @@ var Game = function(scene, socket) {
             for (i = tempSphere.colors.length / 2 + 3; i < tempSphere.colors.length; i += 4) {
                 tempSphere.colors[i] = 0.4;
             }
+            //tempSphere.visible = false;
             return tempSphere;
         };
 
@@ -100,49 +102,6 @@ var Game = function(scene, socket) {
             createSphere(),
             createSphere()
         ];
-
-        /*ball = new Ayce.OBJLoader(path + "obj/ball.obj")[0];
-        ball.scale.x = 0.2;
-        ball.scale.y = 0.2;
-        ball.scale.z = 0.2;
-        ball.shader = path + "shader/ball";
-        ball.shaderUniforms = [];
-        ball.shaderUniforms.push(["uTime", "uniform1f", timeObject, ["time"]]);
-        //ball.logVertexShader = true;
-        //ball.logFragmentShader = true;
-        ball.transparent = true;
-        //ball.normals = null;
-        ball.collideWith = [forceField, loop.pane];
-        ball.onCollision = function(collisionData) {
-            var normal = collisionData.collisionVector.normal.copy();
-            normal.scaleBy(-2 * normal.dotProduct(ball.velocity));
-            ball.velocity = ball.velocity.addVector3(normal);
-        };
-
-        for (i = 0; i < ball.colors.length; i += 4) {
-            ball.colors[i] = 0;
-            ball.colors[i + 1] = 0;
-            ball.colors[i + 2] = 0;
-            ball.colors[i + 3] = 1;
-        }
-
-        for (i = ball.colors.length / 2 + 3; i < ball.colors.length; i += 4) {
-            ball.colors[i] = 0.4;
-        }*/
-
-        /*pane = new Ayce.TextureCube(path + "textures/pane3.png");
-        pane.textureCoords = [0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0,
-            1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 0.0,
-            0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 1.0,
-            1.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0,
-            1.0, 0.0, 1.0, 1.0, 0.0, 1.0, 0.0, 0.0,
-            0.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 1.0
-        ];
-        pane.scale.set(1.25, 1, 0.1);
-        pane.transparent = true;
-        pane.twoFaceTransparency = true;
-        pane.visible = false;
-        scene.addToScene(pane);*/
 
         paneEmpty = new Ayce.Object3D();
         paneEmpty.position.z = -4;
@@ -233,6 +192,19 @@ var Game = function(scene, socket) {
         waitingForPlayer.scale.x = 3;
         waitingForPlayer.scale.y = 3;
         scene.addToScene(waitingForPlayer);
+
+        var skybox = new Ayce.Skybox(
+            "CloudyLightRaysFront2048.png",
+            "CloudyLightRaysBack2048.png",
+            "CloudyLightRaysUp2048.png",
+            "CloudyLightRaysDown2048.png",
+            "CloudyLightRaysLeft2048.png",
+            "CloudyLightRaysRight2048.png",
+            path + "textures/skybox/",
+            bodyParent,
+            scene.getCamera().farPlane
+        );
+        scene.addToScene(skybox);
     };
 
     function getLeapArmFunction(data, leftArm, rightArm) {
@@ -300,7 +272,7 @@ var Game = function(scene, socket) {
     this.setupGame = function(socket) {
         //Player functions
         socket.onPlayerID = function(data) {
-            var socketID = data.id;
+            socketID = data.id;
             loop.playerType = data.type;
             if (loop.playerType == "player2") negateObjectDirection();
         };
@@ -394,8 +366,6 @@ var Game = function(scene, socket) {
             var o3D = null;
 
             if (data.type == "sphere") {
-                //o3D = ball;
-                console.log(data);
                 o3D = spheres[data.args.index];     // TODO: move index out of args
 
             } else if (data.type == "pane") {
@@ -522,6 +492,9 @@ var Game = function(scene, socket) {
             to.velocity.x = from.velocity.x;
             to.velocity.y = from.velocity.y;
             to.velocity.z = from.velocity.z;
+        }
+        if (from.visible!=undefined) {
+            to.visible = from.visible;
         }
     }
 
