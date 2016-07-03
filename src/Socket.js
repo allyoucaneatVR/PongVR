@@ -1,8 +1,8 @@
 /*jslint browser: true*/
 
 var PongVRSocket = function(io){
-    //var ip = "http://127.0.0.1:8081";
-    var ip = "https://januskopf.com:8080";
+    var ip = "http://127.0.0.1:8081";
+    //var ip = "https://januskopf.com:8080";
     var scope = this;
     var socket, socketID;
 
@@ -83,9 +83,9 @@ var PongVRSocket = function(io){
 
         socket.on('id',             scope.onPlayerID);
         socket.on('new_player',     scope.onPlayerJoins);
-        socket.on('add_O3D',        scope.onO3DCreate);
-        socket.on('remove_O3D',     scope.onO3DRemove);
-        socket.on('update_O3D',     scope.onO3DUpdate);
+        socket.on('add_O3D',        scope.onO3DCreate);             // wird bei 5 bällen 5 mal aufgerufen
+        socket.on('remove_O3D',     scope.onO3DRemove);             // wird nie aufgerufen
+        socket.on('update_O3D',     scope.onO3DUpdate);             // balls als einzelne objekte im array
         socket.on('change_positon', scope.onPositionUpdate);
         socket.on('player_pos',     scope.onPlayerPosition);
         socket.on('remove_player',  scope.onPlayerRemove);
