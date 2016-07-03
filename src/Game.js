@@ -53,11 +53,7 @@ var Game = function(scene, socket) {
 
     this.createO3Ds = function() {
 
-        arenaO3Ds = new Ayce.OBJLoader(path + "obj/arena/arena.obj");
-        for (var i = 0; i < arenaO3Ds.length; i++) {
-            var obj = arenaO3Ds[i];
-            scene.addToScene(obj);
-        }
+        var arena = new Game.Arena(scene, timeObject);
 
         bodyO3Ds = new Ayce.OBJLoader(path + "obj/body.obj");
         body = getNewBody(bodyO3Ds, mobileVR);

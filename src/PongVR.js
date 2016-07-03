@@ -45,7 +45,7 @@ function initAyce(cardboard, distortion) {
     if(webVRSuccess || mobileVR){
         var fullInfo = document.querySelector("#fullscreen-info");
         fullInfo.style.display = "block";
-        
+
         if(mobileVR){
             var enterFullscreen = document.querySelector("#enter-fullscreen-info");
             enterFullscreen.style.display = "";
@@ -61,19 +61,22 @@ function initAyce(cardboard, distortion) {
                     enterHMD.style.display = "none";
                 });
             }
-            
+
             scene.setHMDEnterElement(enterHMD);
             scene.setHMDExitElement (exitHMD);
+
+            var manager = scene.getCamera().getManager();
+            manager.modifiers.push(new Ayce.MouseKeyboard(canvas, canvas));
         }
     }
-    
+
     aycL = new Ayce.allyoucanLeap.initLeapMotion(scene, new Ayce.allyoucanLeap.HandModels.Default());
     game = new Game(scene, socket);
     game.initScene();
     game.createO3Ds();
     game.setupGame(socket);
     socket.socketGameCom();
-    
+
     tick();
 }
 //helpers
@@ -114,7 +117,7 @@ function motionSensors(useSensor){
 //Main loop
 function tick() {
     Ayce.requestAnimFrame(tick);
-    
+
     stats.begin();
     game.update();
     scene.updateScene();
